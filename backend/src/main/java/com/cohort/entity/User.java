@@ -17,4 +17,5 @@ public class User extends BaseEntity {
 	
 	@Column (name = "image", nullable = true, length = 45)
 	private String image;
+	
 }
