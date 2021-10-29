@@ -13,7 +13,7 @@ import lombok.Getter;
 public class User {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column (name = "id", nullable = false)
+	@Column (name = "user_id", nullable = false)
 	private Long id;
 	
 	@Column (name = "mail", nullable = false, length = 45)
