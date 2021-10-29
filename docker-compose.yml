@@ -12,6 +12,9 @@ services:
       - 32000:3306
     # 컨테이너 내에서 사용되는 환경 변수
     environment:
+      # 어드민계정과 비밀번호
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: ssafy
       # <Database root 계정 비밀 번호 설정 : ssafy>
       MYSQL_ROOT_PASSWORD: ssafy
       TZ: 'Asia/Seoul'
