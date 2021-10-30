@@ -5,11 +5,11 @@ services:
   db:
     # 사용할 이미지(Docker Hub 또는 로컬에 저장된 Image)
     image: mysql:8.0
-    container_name: cohort_db
+    # container_name: cohort_db
     restart: always
     # 외부에서 컨테이너 내부로 연결되는 포트 목록
     ports:
-      - 3306:3306
+      - 32000:3306
     # 컨테이너 내에서 사용되는 환경 변수
     environment:
       # 어드민계정과 비밀번호
@@ -36,7 +36,7 @@ services:
     build:
       context: ./backend
     restart: always
-    container_name: cohort_app
+    # container_name: cohort_app
     ports:
       - 8080:8080
     environment:
@@ -49,6 +49,20 @@ services:
     depends_on:
       - db
     #   - kurento
+    networks:
+      - serve
+  react:
+    # 공개된 Image 가 아닌 Dockerfile 을 통한 빌드 이미지 사용
+    build:
+      context: ./frontend
+    restart: always
+    # container_name: cohort_react
+    ports:
+      - 5000:5000
+    environment:
+      TZ: Asia/Seoul
+      server.address: 0.0.0.0
+      # 의존 컨테이너
     networks:
       - serve
 
