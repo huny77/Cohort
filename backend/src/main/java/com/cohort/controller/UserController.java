@@ -1,5 +1,6 @@
 package com.cohort.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,28 +22,19 @@ import io.swagger.annotations.ApiParam;
 @CrossOrigin("*")
 @Api(value = "유저 API", tags = {"User"})
 @RestController
-@RequestMapping("/api/v1/users")
-public class UserController {
-	
-//	private final UserService userService;
-	
-	@PostMapping("/glogin")
-	@ApiOperation(value = "구글로그인", notes = "구글로그인") 
-	public String glogin(@RequestBody @ApiParam(value="구글로그인정보", required = true) String b) {
-		System.out.println(b);	
-		return b;
+@RequestMapping("/app/users")
+public class UserController {		
+	@Autowired
+	UserService userService;	
+	/**
+     * 로그인 API [POST] /app/users/
+     * 
+     * @return BaseResponse
+     */
+    // Body
+	@PostMapping()
+	@ApiOperation(value = "구글로그인", notes = "구글로그인",response = BaseResponse.class) 
+	public BaseResponse glogin(@RequestBody @ApiParam(value="구글로그인정보", required = true) UserRequest request) {
+		return userService.login(request);			
 	}
-
-	@ApiOperation(value = "회원가입", response = BaseResponse.class)
-    @PostMapping("/join")
-    public BaseResponse join(@ApiParam(value = "회원 정보") @RequestBody UserRequest request){
-
-        BaseResponse response = null;
-        try{
-            response = new BaseResponse("success", "가입 완료");
-        }catch(IllegalStateException e){
-            response = new BaseResponse("fail",e.getMessage());
-        }
-        return response;
-    }
 }

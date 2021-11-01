@@ -14,7 +14,7 @@ import io.swagger.annotations.Api;
 @CrossOrigin("*")
 @Api(value = "게시판 API", tags = {"Post"})
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/app/posts")
 public class PostController {
 //	private final PostService postService;
 }
