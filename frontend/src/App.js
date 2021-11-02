@@ -1,13 +1,15 @@
 import React from 'react';
-import Mainpage from './pages/Mainpage';
 import { Route, Link, Switch } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
+import LandingPage from './pages/LandingPage';
+import Navbar from './components/common/Navbar';
 
 const App = () => {
   return (
     <>
       <CssBaseline />
-      <Route path="/" component={Mainpage} exact={true} />
+      <Navbar />
+      <Route path="/" component={LandingPage} exact={true} />
     </>
   );
 };
