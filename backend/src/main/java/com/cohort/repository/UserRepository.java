@@ -6,4 +6,6 @@ import com.cohort.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByMail(String mail);
+	void deleteByMail(String mail);
+	Long findIdByMail(String mail);
 }
