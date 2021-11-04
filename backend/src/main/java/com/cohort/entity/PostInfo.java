@@ -1,11 +1,15 @@
 package com.cohort.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -28,7 +32,8 @@ public class PostInfo extends BaseEntity {
 	private String site;
 	
 	@JsonBackReference
-	@OneToOne(fetch = FetchType.LAZY)
+	@OnDelete(action=OnDeleteAction.CASCADE)
+	@OneToOne(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
 	@JoinColumn (name = "post_id")
 	private Post post;
 }
