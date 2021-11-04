@@ -15,7 +15,7 @@ import com.cohort.entity.PostInfo;
 import com.cohort.entity.PostLike;
 import com.cohort.entity.User;
 import com.cohort.repository.PostInfoRepository;
-import com.cohort.repository.PostLikeRepository;
+import com.cohort.repository.LikeRepository;
 import com.cohort.repository.PostRepository;
 import com.cohort.repository.UserRepository;
 import com.cohort.request.PostRequest;
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 
 	private final PostRepository postRepository;
-	private final PostLikeRepository postLikeRepository;
+	private final LikeRepository postLikeRepository;
 	private final PostInfoRepository postInfoRepository;
 	private final UserRepository userReposiotry;
 
@@ -77,8 +77,15 @@ public class PostService {
 	public BaseResponse remove(Long postId) {
 		BaseResponse response = null;
 		try {
-			postRepository.deleteById(postId);
-			response = new BaseResponse("success", "삭제 성공");
+			Post post = postRepository.findById(postId).orElse(null);
+			if(post == null) {
+				response = new BaseResponse("fail", "존재하지 않는 게시글번호");
+			}
+			else {
+				postLikeRepository.deleteAllByPost(post);
+				postRepository.deleteById(postId);
+				response = new BaseResponse("success", "삭제 성공");
+			}
 		} catch (Exception e) {
 			response = new BaseResponse("fail", e.getMessage());
 		}
