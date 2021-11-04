@@ -1,11 +1,15 @@
 package com.cohort.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cohort.entity.Post;
 import com.cohort.entity.User;
+import com.cohort.repository.PostRepository;
 import com.cohort.repository.UserRepository;
 import com.cohort.request.UserRequest;
 import com.cohort.response.BaseResponse;
@@ -16,6 +20,11 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	PostRepository postRepository;
+	@Autowired
+	PostService postService;
+	
 	
 	/**
 	 * 로그인
@@ -49,6 +58,10 @@ public class UserService {
 			return new BaseResponse<Object>("fail","일치하는 이메일이 없다.");
 		}
 		else {
+			List<Post> post = postRepository.findAllByUser(user);
+			for(Post p : post) {
+				postService.remove(p.getId());
+			}
 			userRepository.deleteById(user.getId());
 			return new BaseResponse<Object>("success","회원삭제성공");
 		}
