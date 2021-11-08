@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   AppBar,
   Toolbar,
@@ -20,6 +21,8 @@ import WysiwygIcon from '@mui/icons-material/Wysiwyg';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import GoogleAuth from './GoogleAuth';
+import { logout } from '../../modules/user';
 
 const CustomizedAppBar = styled(AppBar)`
   background-color: #f2f3f7;
@@ -38,6 +41,14 @@ const CusotmizedButton = styled(Button)`
 `;
 
 const Navbar = () => {
+  const { user } = useSelector(({ user }) => ({
+    user: user.user,
+  }));
+  const dispatch = useDispatch();
+  const onLogout = () => {
+    dispatch(logout());
+  };
+
   const [sideState, setSideState] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
@@ -73,6 +84,8 @@ const Navbar = () => {
               direction="column"
               justifyContent="space-around"
               xs={12}
+              onClick={toggleDrawer(false)}
+              onKeyDown={toggleDrawer(false)}
             >
               <Grid item xs={10}>
                 <List>
@@ -103,25 +116,28 @@ const Navbar = () => {
                 </List>
               </Grid>
 
-              <Grid item xs={2}>
-                <List>
-                  <ListItem button>
-                    <ListItemIcon>
-                      <SettingsIcon />
-                    </ListItemIcon>
-                    내정보
-                  </ListItem>
-                  <ListItem button>
-                    <ListItemIcon>
-                      <LogoutIcon />
-                    </ListItemIcon>
-                    로그아웃
-                  </ListItem>
-                </List>
-              </Grid>
+              {user && (
+                <Grid item xs={2}>
+                  <List>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <SettingsIcon />
+                      </ListItemIcon>
+                      내정보
+                    </ListItem>
+                    <ListItem button onClick={onLogout}>
+                      <ListItemIcon>
+                        <LogoutIcon />
+                      </ListItemIcon>
+                      로그아웃
+                    </ListItem>
+                  </List>
+                </Grid>
+              )}
             </Grid>
           </Drawer>
-          <CusotmizedButton>로그인</CusotmizedButton>
+          {/* <CusotmizedButton>로그인</CusotmizedButton> */}
+          <GoogleAuth />
         </CustomizedToolbar>
       </CustomizedAppBar>
     </Box>
