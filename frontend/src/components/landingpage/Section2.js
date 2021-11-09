@@ -1,4 +1,4 @@
-import { CardMedia, Typography, Box, Card } from '@mui/material';
+import { Typography, Box} from '@mui/material';
 import styled from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 
