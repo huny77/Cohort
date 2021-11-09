@@ -71,8 +71,12 @@ const Header = () => {
           <Scroll to="our-service" smooth={true}>
             <CustomizedButton>서비스 소개</CustomizedButton>
           </Scroll>
-          <CustomizedButton>알고리즘 사이트</CustomizedButton>
-          <CustomizedButton>고객지원</CustomizedButton>
+          <Scroll to="algorithm-site" smooth={true}>
+            <CustomizedButton>알고리즘 사이트</CustomizedButton>
+          </Scroll>
+          <Scroll to="customer-support" smooth={true}>
+            <CustomizedButton>고객지원</CustomizedButton>
+          </Scroll>
         </CustomizedToolbar>
       </Box>
       <Collapse
