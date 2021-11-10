@@ -1,8 +1,10 @@
 package com.cohort.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 
 import com.cohort.entity.Post;
@@ -22,7 +24,7 @@ public class PostDto {
 	private Long id;
 	private String title;
 	private String content;
-	private Date created;
+	private LocalDate created;
 	private User user;
 	private String language;
 	private String site;
@@ -50,17 +52,21 @@ public class PostDto {
 	 */
 	@Builder
 	// 게시글 조회에 필요한 생성자
-	public PostDto(Post post, Integer like, PostInfo postInfo) {
+	public PostDto(Post post, Integer integer, PostInfo postInfo) {
 		Assert.notNull(post, "post must not be null");
-//		Assert.notNull(postInfo, "postInfo must not be null");
+		Assert.notNull(postInfo, "postInfo must not be null");
 		
+		this.id = post.getId();
 		this.title = post.getTitle();
 		this.created = post.getCreated();
 		this.user = post.getUser();
+		this.content = post.getContent();
 		this.like = like;
 		this.language = postInfo.getLanguage();
 		this.site = postInfo.getSite();
 	}
+
+	
 	
 	public Post toEntity() {
 		return Post.builder()
@@ -69,6 +75,7 @@ public class PostDto {
 				.user(this.user)
 				.build();
 	}
+
 
 
 }
