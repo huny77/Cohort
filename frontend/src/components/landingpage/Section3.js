@@ -14,10 +14,21 @@ const ZoomBox = styled(Box)`
   transition: 2s;
 `;
 
+const CustomizedText = styled(Typography)`
+  font-size: 2rem;
+  font-weight: 20px;
+`;
+
 const renderContent = () => {
   return (
     <>
       <Box sx={{ margin: 'auto' }}>
+      <CustomizedText sx={{marginBottom: 1, fontWeight: 100}}>
+        해당 알고리즘 사이트에서 어려운 문제들을 스터디하세요.
+      </CustomizedText>
+      <CustomizedText sx={{marginBottom: 10}}>
+        5개의 언어를 활용해 알고리즘 문제를 해결할 수 있습니다.
+      </CustomizedText>
         <Grid container spacing={8}>
           <Grid item xs={4}>
             <Card sx={{ maxWidth: 345 }}>
