@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.cohort.dto.PostDto;
@@ -33,22 +35,32 @@ public class PostService {
 	private final PostInfoRepository postInfoRepository;
 	private final UserRepository userReposiotry;
 
-	public BaseResponse findAll() {
+	public BaseResponse findAll(Integer page) {
 		BaseResponse response = null;
 		
+		if (page > 0) --page;
+		int size = 0;
 		try {
-			List<Post> postList = postRepository.findAll();
+			int totalPost = (int)postRepository.count();
+			
+			if (totalPost < 10) {
+				size = totalPost;
+			} else {
+				size = 10;
+			}
+			
+			Page<Post> posts = postRepository.findAll(PageRequest.of(page, size));
 			List<Integer> likeList = new ArrayList<>();
 			List<PostInfo> infoList = new ArrayList<>();
-			for (Post p : postList) {
+			for (Post p : posts) {
 				int count = postLikeRepository.countByPostId(p.getId());
 				likeList.add(count);
 				PostInfo postInfo = postInfoRepository.findByPostId(p.getId());
 				infoList.add(postInfo);
 			}
 			List<PostDto> list = new ArrayList<PostDto>();
-			for (int i = 0; i < postList.size(); i++) {
-				list.add(new PostDto(postList.get(i), likeList.get(i), infoList.get(i)));
+			for (int i = 0; i < posts.getSize(); i++) {
+				list.add(new PostDto(posts.getContent().get(i), likeList.get(i), infoList.get(i)));
 			}
 			response = new BaseResponse("success", list);
 		} catch (Exception e) {
@@ -85,6 +97,24 @@ public class PostService {
 				postLikeRepository.deleteAllByPost(post);
 				postRepository.deleteById(postId);
 				response = new BaseResponse("success", "삭제 성공");
+			}
+		} catch (Exception e) {
+			response = new BaseResponse("fail", e.getMessage());
+		}
+		return response;
+	}
+
+	public BaseResponse showDetail(Long postId) {
+		BaseResponse response = null;
+		try {
+			Post post = postRepository.findById(postId).orElse(null);
+			if (post == null) {
+				response = new BaseResponse("fail", "존재하지 않는 게시글 Id입니다.");
+			} else {
+				int count = postLikeRepository.countByPostId(postId);
+				PostInfo postInfo = postInfoRepository.findByPostId(postId);
+				PostDto postDto = new PostDto(post, count, postInfo);
+				response = new BaseResponse("success", postDto);
 			}
 		} catch (Exception e) {
 			response = new BaseResponse("fail", e.getMessage());

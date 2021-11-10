@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cohort.dto.PostLikeDto;
 import com.cohort.request.CommentRequest;
 import com.cohort.request.LikeRequest;
 import com.cohort.request.PostRequest;
@@ -49,12 +48,18 @@ public class PostController {
 		return postService.save(request);
 	}
 	
-	@GetMapping()
+	@GetMapping("/shows/{page}")
 	@ApiOperation(value = "게시판 코드 조회",response = BaseResponse.class)
-	public BaseResponse showPost() {
-		return postService.findAll();
+	public BaseResponse showPost(@PathVariable Integer page) {
+		return postService.findAll(page);
 	}
-
+	
+	@GetMapping("/details/{id}")
+	@ApiOperation(value = "게시판 코드 상세 조회", response = BaseResponse.class)
+	public BaseResponse showDetail(@PathVariable Long id) {
+		return postService.showDetail(id);
+	}
+	
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "게시판 코드 삭제", response = BaseResponse.class)
 	public BaseResponse deletePost(@PathVariable Long id) {
