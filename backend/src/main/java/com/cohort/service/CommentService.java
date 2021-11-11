@@ -1,5 +1,6 @@
 package com.cohort.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.CommunicationException;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cohort.dto.CommentDto;
 import com.cohort.entity.Comment;
 import com.cohort.entity.Post;
 import com.cohort.entity.User;
@@ -79,8 +81,13 @@ public class CommentService {
 			}
 			System.out.println(post);
 			List<Comment> list = commentRepository.findAllByPost(post);
-			System.out.println(list);
-			res = new BaseResponse("success",list);
+			List<CommentDto> dtoList = new ArrayList<>();
+			for (Comment c : list) {
+				User user = userRepository.findById(c.getUser().getId()).orElse(null);
+				dtoList.add(new CommentDto(c, user));
+			}
+			System.out.println(dtoList);
+			res = new BaseResponse("success",dtoList);
 		}catch (Exception e) {
 			res = new BaseResponse("fail",e.getMessage());
 		}
