@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { oauth } from '../../modules/auth';
 import { check, userSaga } from '../../modules/user';
 import { setCookie } from '../../lib/cookie';
+import { tempSetUser } from '../../modules/user';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
@@ -50,11 +51,12 @@ const GoogleAuth = ({ history }) => {
         setCookie('mail', user.data.mail, { path: '/' });
         setCookie('name', user.data.name, { path: '/' });
         setCookie('image', user.data.image, { path: '/' });
+        dispatch(tempSetUser(user.data.mail));
       } catch (e) {
         console.log('cookie is not working');
       }
     }
-  }, [history, user]);
+  }, [history, user, dispatch]);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
