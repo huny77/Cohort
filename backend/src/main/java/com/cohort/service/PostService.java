@@ -12,11 +12,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.cohort.dto.PostDto;
+import com.cohort.entity.Comment;
 import com.cohort.entity.Post;
 import com.cohort.entity.PostInfo;
 import com.cohort.entity.PostLike;
 import com.cohort.entity.User;
 import com.cohort.repository.PostInfoRepository;
+import com.cohort.repository.CommentRepository;
 import com.cohort.repository.LikeRepository;
 import com.cohort.repository.PostRepository;
 import com.cohort.repository.UserRepository;
@@ -34,6 +36,7 @@ public class PostService {
 	private final LikeRepository postLikeRepository;
 	private final PostInfoRepository postInfoRepository;
 	private final UserRepository userReposiotry;
+	private final CommentRepository commentRepository;
 
 	public BaseResponse findAll(Integer page) {
 		BaseResponse response = null;
@@ -50,6 +53,7 @@ public class PostService {
 			}
 			
 			Page<Post> posts = postRepository.findAll(PageRequest.of(page, size));
+			int totalPages = posts.getTotalPages();
 			List<Integer> likeList = new ArrayList<>();
 			List<PostInfo> infoList = new ArrayList<>();
 			for (Post p : posts) {
@@ -60,7 +64,7 @@ public class PostService {
 			}
 			List<PostDto> list = new ArrayList<PostDto>();
 			for (int i = 0; i < posts.getSize(); i++) {
-				list.add(new PostDto(posts.getContent().get(i), likeList.get(i), infoList.get(i)));
+				list.add(new PostDto(posts.getContent().get(i), likeList.get(i), infoList.get(i), totalPages));
 			}
 			response = new BaseResponse("success", list);
 		} catch (Exception e) {
@@ -90,11 +94,14 @@ public class PostService {
 		BaseResponse response = null;
 		try {
 			Post post = postRepository.findById(postId).orElse(null);
+			PostInfo postInfo = postInfoRepository.findByPostId(postId);
 			if(post == null) {
 				response = new BaseResponse("fail", "존재하지 않는 게시글번호");
 			}
 			else {
-				postLikeRepository.deleteAllByPost(post);
+//				postLikeRepository.deleteAllByPost(post);
+//				postInfoRepository.deleteById(postInfo.getId());
+				System.out.println("postId:"+postId);
 				postRepository.deleteById(postId);
 				response = new BaseResponse("success", "삭제 성공");
 			}
@@ -108,12 +115,13 @@ public class PostService {
 		BaseResponse response = null;
 		try {
 			Post post = postRepository.findById(postId).orElse(null);
+			List<Comment> comments = commentRepository.findAllByPost(post);
 			if (post == null) {
 				response = new BaseResponse("fail", "존재하지 않는 게시글 Id입니다.");
 			} else {
 				int count = postLikeRepository.countByPostId(postId);
 				PostInfo postInfo = postInfoRepository.findByPostId(postId);
-				PostDto postDto = new PostDto(post, count, postInfo);
+				PostDto postDto = new PostDto(post, count, postInfo, comments);
 				response = new BaseResponse("success", postDto);
 			}
 		} catch (Exception e) {

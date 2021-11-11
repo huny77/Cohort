@@ -1,12 +1,15 @@
 package com.cohort.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 
+import com.cohort.entity.Comment;
 import com.cohort.entity.Post;
 import com.cohort.entity.PostInfo;
 import com.cohort.entity.User;
@@ -24,11 +27,13 @@ public class PostDto {
 	private Long id;
 	private String title;
 	private String content;
-	private LocalDate created;
+	private LocalDateTime created;
 	private User user;
 	private String language;
 	private String site;
 	private Integer like;
+	private List<Comment> comments;
+	private Integer totalPages;
 	
 
 	/**
@@ -52,7 +57,7 @@ public class PostDto {
 	 */
 	@Builder
 	// 게시글 조회에 필요한 생성자
-	public PostDto(Post post, Integer integer, PostInfo postInfo) {
+	public PostDto(Post post, Integer like, PostInfo postInfo, int totalPages) {
 		Assert.notNull(post, "post must not be null");
 		Assert.notNull(postInfo, "postInfo must not be null");
 		
@@ -64,8 +69,28 @@ public class PostDto {
 		this.like = like;
 		this.language = postInfo.getLanguage();
 		this.site = postInfo.getSite();
+		this.totalPages = totalPages;
 	}
 
+	/**
+	 * Assert.notNull null값이 입력되면 안되는 컬럼들을 위한 안전장치
+	 */
+	@Builder
+	// 게시글 상세 조회에 필요한 생성자
+	public PostDto(Post post, Integer like, PostInfo postInfo, List<Comment> comments) {
+		Assert.notNull(post, "post must not be null");
+		Assert.notNull(postInfo, "postInfo must not be null");
+		
+		this.id = post.getId();
+		this.title = post.getTitle();
+		this.created = post.getCreated();
+		this.user = post.getUser();
+		this.content = post.getContent();
+		this.like = like;
+		this.language = postInfo.getLanguage();
+		this.site = postInfo.getSite();
+		this.comments = comments;
+	}
 	
 	
 	public Post toEntity() {
@@ -75,6 +100,7 @@ public class PostDto {
 				.user(this.user)
 				.build();
 	}
+
 
 
 
