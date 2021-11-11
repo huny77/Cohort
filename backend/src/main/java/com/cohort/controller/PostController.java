@@ -2,6 +2,7 @@ package com.cohort.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,7 +62,7 @@ public class PostController {
      */
 	@GetMapping()
 	@ApiOperation(value = "게시판 코드 조회",response = BaseResponse.class)
-	public BaseResponse showPost(@RequestParam Integer page) {
+	public BaseResponse showPost(@RequestParam @ApiParam(value = "page index 는 1부터 시작") Integer page) {
 		return postService.findAll(page);
 	}
 	
@@ -116,8 +117,8 @@ public class PostController {
 	
 	@GetMapping("/comments/{id}")
 	@ApiOperation(value = "게시판 댓글 조회",response = BaseResponse.class)
-	public BaseResponse readComment(@PathVariable Long id) {
-		return commentService.findCommentByPostId(id);
+	public BaseResponse readComment(@PathVariable Long id, @ApiParam(value = "page index 는 1부터 시작") Integer page) {
+		return commentService.findCommentByPostId(id, page);
 	}
 	
 	/**
