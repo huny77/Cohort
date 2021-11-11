@@ -1,15 +1,20 @@
 package com.cohort.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.criterion.Distinct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.cohort.dto.PostDto;
 import com.cohort.entity.Comment;
@@ -29,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PostService {
 
 	private final PostRepository postRepository;
@@ -38,6 +42,7 @@ public class PostService {
 	private final UserRepository userReposiotry;
 	private final CommentRepository commentRepository;
 
+	@Transactional
 	public BaseResponse findAll(Integer page) {
 		BaseResponse response = null;
 		
@@ -74,6 +79,7 @@ public class PostService {
 		return response;
 	}
 
+	@Transactional
 	public BaseResponse save(PostRequest request) {
 		BaseResponse response = null;
 		try {
@@ -90,6 +96,7 @@ public class PostService {
 		
 	}
 
+	@Transactional
 	public BaseResponse remove(Long postId) {
 		BaseResponse response = null;
 		try {
@@ -99,8 +106,15 @@ public class PostService {
 				response = new BaseResponse("fail", "존재하지 않는 게시글번호");
 			}
 			else {
-//				postLikeRepository.deleteAllByPost(post);
-//				postInfoRepository.deleteById(postInfo.getId());
+				List<Comment> comments = commentRepository.findAllByPost(post);
+				List<PostLike> likes = postLikeRepository.findAllByPost(post);
+				postInfoRepository.deleteById(postInfo.getId());
+				for (PostLike postLike : likes) {
+					postLikeRepository.deleteById(postLike.getId());
+				}
+				for (Comment comment : comments) {
+					commentRepository.deleteById(comment.getId());
+				}
 				System.out.println("postId:"+postId);
 				postRepository.deleteById(postId);
 				response = new BaseResponse("success", "삭제 성공");
@@ -111,6 +125,7 @@ public class PostService {
 		return response;
 	}
 
+	@Transactional
 	public BaseResponse showDetail(Long postId) {
 		BaseResponse response = null;
 		try {
@@ -127,6 +142,35 @@ public class PostService {
 		} catch (Exception e) {
 			response = new BaseResponse("fail", e.getMessage());
 		}
+		return response;
+	}
+
+	public BaseResponse showPostTop5() {
+		BaseResponse response = null;
+		
+		try {
+			List<Post> posts = postRepository.findAll();
+			HashMap<Long, Integer> map = new HashMap<Long, Integer>();
+			for (Post post : posts) {
+				int likes = postLikeRepository.countByPostId(post.getId());
+				map.put(post.getId(), likes);
+			}
+			List<Long> keySetList = new ArrayList(map.keySet());
+			Collections.sort(keySetList, (o1, o2) -> (map.get(o2).compareTo(map.get(o1))));
+			
+			List<PostDto> postDtos = new ArrayList<>();
+			for (int i = 0; i < 5; i++) {
+				Long postId = keySetList.get(i);
+				Post post = postRepository.findById(postId).orElse(null);
+				PostInfo postInfo = postInfoRepository.findByPostId(postId);
+				postDtos.add(new PostDto(post, map.get(keySetList.get(i)), postInfo));
+			}
+			
+			response = new BaseResponse("success", postDtos);
+		} catch (Exception e) {
+			response = new BaseResponse("fail", e.getMessage());
+		}
+		
 		return response;
 	}
 }
