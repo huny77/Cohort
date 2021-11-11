@@ -7,8 +7,11 @@ import { check, userSaga } from '../../modules/user';
 import { setCookie } from '../../lib/cookie';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const GoogleAuth = ({ history }) => {
+  const [open, setOpen] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const { google, googleError, user } = useSelector(({ auth, user }) => ({
@@ -35,12 +38,14 @@ const GoogleAuth = ({ history }) => {
       const mail = google.data.mail;
       console.log('로그인 성공');
       dispatch(check(mail));
+      history.push('/');
+      setOpen(true);
     }
-  }, [google, googleError, dispatch]);
+  }, [google, googleError, dispatch, history]);
 
   useEffect(() => {
     if (user) {
-      history.push('/');
+      // history.push('/');
       try {
         setCookie('mail', user.data.mail, { path: '/' });
         setCookie('name', user.data.name, { path: '/' });
@@ -50,6 +55,14 @@ const GoogleAuth = ({ history }) => {
       }
     }
   }, [history, user]);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   return (
     <>
@@ -69,6 +82,16 @@ const GoogleAuth = ({ history }) => {
           />
         </div>
       )}
+      <Snackbar
+        open={open}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <MuiAlert onClose={handleClose} severity="success">
+          로그인에 성공했습니다.
+        </MuiAlert>
+      </Snackbar>
     </>
   );
 };
