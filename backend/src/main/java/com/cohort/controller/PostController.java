@@ -71,12 +71,22 @@ public class PostController {
      * 
      * @return BaseResponse
      */
-	@GetMapping("/{id}")
+	@GetMapping("/details")
 	@ApiOperation(value = "게시판 코드 상세 조회", response = BaseResponse.class)
-	public BaseResponse showDetail(@RequestParam Long id) {
+	public BaseResponse showDetail(@PathVariable Long id) {
 		return postService.showDetail(id);
 	}
 	
+	/**
+	 * 게시글 추천수 Top5 조회 API [Get] /app/post/deatils/{pid}
+	 * 
+	 * @return BaseResponse
+	 */
+	@GetMapping("/top5")
+	@ApiOperation(value = "게시판 코드 좋아요 수 top5 조회", response = BaseResponse.class)
+	public BaseResponse showPostTop5() {
+		return postService.showPostTop5();
+	}
 	/**
      * 게시글 삭제 API [Delete] /app/post/{pid}
      * 

@@ -76,6 +76,25 @@ public class PostDto {
 	 * Assert.notNull null값이 입력되면 안되는 컬럼들을 위한 안전장치
 	 */
 	@Builder
+	// 게시글 Top5조회에 필요한 생성자
+	public PostDto(Post post, Integer like, PostInfo postInfo) {
+		Assert.notNull(post, "post must not be null");
+		Assert.notNull(postInfo, "postInfo must not be null");
+		
+		this.id = post.getId();
+		this.title = post.getTitle();
+		this.created = post.getCreated();
+		this.user = post.getUser();
+		this.content = post.getContent();
+		this.like = like;
+		this.language = postInfo.getLanguage();
+		this.site = postInfo.getSite();
+	}
+	
+	/**
+	 * Assert.notNull null값이 입력되면 안되는 컬럼들을 위한 안전장치
+	 */
+	@Builder
 	// 게시글 상세 조회에 필요한 생성자
 	public PostDto(Post post, Integer like, PostInfo postInfo, List<Comment> comments) {
 		Assert.notNull(post, "post must not be null");
@@ -100,6 +119,7 @@ public class PostDto {
 				.user(this.user)
 				.build();
 	}
+
 
 
 
