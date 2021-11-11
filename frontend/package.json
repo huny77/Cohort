@@ -56,5 +56,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://k5b104.p.ssafy.io:8080/"
 }
