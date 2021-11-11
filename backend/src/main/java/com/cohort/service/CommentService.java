@@ -6,6 +6,9 @@ import java.util.List;
 import javax.naming.CommunicationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,19 +75,33 @@ public class CommentService {
 	}
 
 
-	public BaseResponse findCommentByPostId(Long id) {
+	public BaseResponse findCommentByPostId(Long id, Integer page) {
 		BaseResponse res = null;
+		if (page > 0) --page;
+		int size = 0;
+		
 		try {
+			
 			Post post = postRepository.findById(id).orElse(null);
 			if(post==null) {
 				res = new BaseResponse("fail","존재하지 않는 post id 입니다");
 			}
+			
+			int totalComment = (int) commentRepository.countByPost(post);
+			if (totalComment < 10) {
+				size = totalComment;
+			} else {
+				size = 10;
+			}
+			
 			System.out.println(post);
-			List<Comment> list = commentRepository.findAllByPost(post);
+			Pageable pageable = PageRequest.of(page, size);
+			Page<Comment> list = commentRepository.findAllByPost(post, pageable);
+			int totalPages = list.getTotalPages();
 			List<CommentDto> dtoList = new ArrayList<>();
 			for (Comment c : list) {
 				User user = userRepository.findById(c.getUser().getId()).orElse(null);
-				dtoList.add(new CommentDto(c, user));
+				dtoList.add(new CommentDto(c, user, totalPages));
 			}
 			System.out.println(dtoList);
 			res = new BaseResponse("success",dtoList);
