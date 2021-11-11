@@ -42,6 +42,30 @@ const Location = () => {
       position: markerPosition
     });
     marker.setMap(map);
+
+    const content = '<div class="wrap" style="background-color:white;">' + 
+                '    <div class="info" style="">' + 
+                '        <div class="title" style="font-weight: bold; font-size: 20px; margin-bottom:5%; background-color:#E2E2E2;">' + 
+                '            SSAFY 대전캠퍼스' + 
+                '        </div>' + 
+                '        <div class="body">' + 
+                '            <div class="desc">' + 
+                '                <div class="ellipsis">대전광역시 유성구 동대서로 98-39</div>' + 
+                '                <div class="jibun ellipsis">TEL) 02-3429-5100</div>' + 
+                '                <div style="margin-top:3%"><a href="https://www.ssafy.com/ksp/jsp/swp/swpMain.jsp" target="_blank" class="link" style="text-decoration:none;">홈페이지</a></div>' + 
+                '            </div>' + 
+                '        </div>' + 
+                '    </div>' +    
+                '</div>';
+
+    const position = new kakao.maps.LatLng(36.35635, 127.29835091080787)
+    const overlay = new kakao.maps.CustomOverlay({
+        content: content,
+        map: map,
+        position: position     
+    });
+
+    overlay.setMap(map);
   }, [])
   return (
     <>

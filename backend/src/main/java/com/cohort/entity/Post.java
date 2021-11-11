@@ -1,6 +1,6 @@
 package com.cohort.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +14,7 @@ import javax.persistence.PrePersist;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -40,20 +41,15 @@ public class Post extends BaseEntity {
 	@Column (name = "content", nullable = true)
 	private String content;
 	
+	@CreatedDate
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column (name = "created", updatable = true)
-	private Date created;
+	private LocalDateTime created;
 	
 	@JsonBackReference
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn (name = "user_id")
     private User user;
-	
-	
-	@PrePersist
-	public void onCreate() {
-		this.created = new Date();
-	}
 
 }

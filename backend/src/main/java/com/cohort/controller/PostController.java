@@ -1,6 +1,8 @@
 package com.cohort.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cohort.dto.PostLikeDto;
 import com.cohort.request.CommentRequest;
 import com.cohort.request.LikeRequest;
 import com.cohort.request.PostRequest;
@@ -43,18 +44,44 @@ public class PostController {
 	@Autowired
 	LikeService likeService;
 	
+	/**
+     * 코드 저장 API [Post] /app/post
+     * 
+     * @return BaseResponse
+     */
 	@PostMapping()
 	@ApiOperation(value = "코드 저장", response = BaseResponse.class)
 	public BaseResponse savePost(@RequestBody PostRequest request) {
 		return postService.save(request);
 	}
 	
+	/**
+     * 게시글 코드 조회 API [Get] /app/post/shows/{page}
+     * 
+     * @return BaseResponse
+     */
 	@GetMapping()
 	@ApiOperation(value = "게시판 코드 조회",response = BaseResponse.class)
-	public BaseResponse showPost() {
-		return postService.findAll();
+	public BaseResponse showPost(@RequestParam @ApiParam(value = "page index 는 1부터 시작") Integer page) {
+		return postService.findAll(page);
 	}
-
+	
+	/**
+     * 게시글 상세 조회 API [Get] /app/post/deatils/{pid}
+     * 
+     * @return BaseResponse
+     */
+	@GetMapping("/{id}")
+	@ApiOperation(value = "게시판 코드 상세 조회", response = BaseResponse.class)
+	public BaseResponse showDetail(@RequestParam Long id) {
+		return postService.showDetail(id);
+	}
+	
+	/**
+     * 게시글 삭제 API [Delete] /app/post/{pid}
+     * 
+     * @return BaseResponse
+     */
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "게시판 코드 삭제", response = BaseResponse.class)
 	public BaseResponse deletePost(@PathVariable Long id) {
@@ -90,8 +117,8 @@ public class PostController {
 	
 	@GetMapping("/comments/{id}")
 	@ApiOperation(value = "게시판 댓글 조회",response = BaseResponse.class)
-	public BaseResponse readComment(@PathVariable Long id) {
-		return commentService.findCommentByPostId(id);
+	public BaseResponse readComment(@PathVariable Long id, @ApiParam(value = "page index 는 1부터 시작") Integer page) {
+		return commentService.findCommentByPostId(id, page);
 	}
 	
 	/**
