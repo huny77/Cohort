@@ -23,9 +23,10 @@ public class CommentDto {
 	private String content;
 	private LocalDateTime created;
 	private User user;
+	private int totalPages;
 	
 	@Builder
-	public CommentDto(Comment c, User user) {
+	public CommentDto(Comment c, User user, int totalPages) {
 		Assert.notNull(c, "comment must not be null");
 		Assert.notNull(user, "user must not be null");
 		
@@ -33,6 +34,7 @@ public class CommentDto {
 		this.content = c.getContent();
 		this.created = c.getCreated();
 		this.user = user;
+		this.totalPages = totalPages;
 	}
 	
 	public Comment toEntity() {
