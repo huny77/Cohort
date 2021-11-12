@@ -116,7 +116,7 @@ const Comment = ({ match, location }) => {
 
   return (
     <>
-      <div style={{ backgroundColor: 'gray' }}>댓글 (개수)</div>
+      <div style={{ border:"1px solid #a0a0a0", borderRadius: "5px", padding: "5px" }}>댓글(개수)</div>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {!commentsLoading &&
           comments &&
