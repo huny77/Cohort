@@ -5,6 +5,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
+import { ListItemAvatar } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +17,32 @@ import {
 import { changeField, initialize } from '../../modules/comments';
 import { withRouter } from 'react-router-dom';
 import qs from 'qs';
+import { Avatar } from '@mui/material';
+
+function timeForToday(value) {
+  const today = new Date();
+  const timeValue = new Date(value);
+
+  const betweenTime = Math.floor(
+    (today.getTime() - timeValue.getTime()) / 1000 / 60,
+  );
+  if (betweenTime < 1) return '방금전';
+  if (betweenTime < 60) {
+    return `${betweenTime}분전`;
+  }
+
+  const betweenTimeHour = Math.floor(betweenTime / 60);
+  if (betweenTimeHour < 24) {
+    return `${betweenTimeHour}시간전`;
+  }
+
+  const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+  if (betweenTimeDay < 365) {
+    return `${betweenTimeDay}일전`;
+  }
+
+  return `${Math.floor(betweenTimeDay / 365)}년전`;
+}
 
 const Comment = ({ match, location }) => {
   const { post_id } = match.params;
@@ -89,14 +116,36 @@ const Comment = ({ match, location }) => {
 
   return (
     <>
-      <div style={{ backgroundColor: 'gray' }}>댓글 (개수)</div>
+      <div style={{ border:"1px solid #a0a0a0", borderRadius: "5px", padding: "5px" }}>댓글(개수)</div>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {!commentsLoading &&
           comments &&
           comments.data.map((comment) => (
             <ListItem alignItems="flex-start" key={comment.id}>
+              <ListItemAvatar>
+                <Avatar alt="profile" src={comment.user.image} />
+              </ListItemAvatar>
               <ListItemText
-                primary={`댓글 id: ${comment.id}`}
+                primary={
+                  <>
+                  <Typography
+                    sx={{ display: 'inline' }}
+                    component="div"
+                    variant="button"
+                    color="text.primary"
+                  >
+                    {comment.user.name}
+                  </Typography>
+                  <Typography
+                    sx={{ display: 'inline', m:2}}
+                    component="div"
+                    variant="overline"
+                    color="text.primary"
+                  >
+                    {timeForToday(comment.created)}
+                  </Typography>
+                  </>
+                }
                 secondary={
                   <>
                     <Typography
@@ -107,7 +156,7 @@ const Comment = ({ match, location }) => {
                     >
                       {comment.content}
                     </Typography>
-                    {new Date(`${comment.created}`).toLocaleDateString()}
+                    <Divider component="li" sx={{mt:1}} />
                   </>
                 }
               />
