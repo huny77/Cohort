@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { listPosts } from '../../modules/posts';
 import { Link } from 'react-router-dom';
+import qs from 'qs';
 
 const StyledTableCell = styled(TableCell)`
   background-color: black;
@@ -22,7 +23,7 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
-const PostList = () => {
+const PostList = ({ location }) => {
   const dispatch = useDispatch();
   const { posts, error, loading } = useSelector(({ posts, loading, user }) => ({
     posts: posts.posts,
@@ -31,8 +32,15 @@ const PostList = () => {
   }));
 
   useEffect(() => {
-    dispatch(listPosts());
-  }, [dispatch]);
+    const { page = 1 } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    });
+    dispatch(
+      listPosts({
+        page,
+      }),
+    );
+  }, [dispatch, location.search]);
 
   return (
     <TableContainer component={Paper}>
@@ -48,27 +56,29 @@ const PostList = () => {
           </TableRow>
         </TableHead>
 
-        {!loading &&
-          posts &&
-          posts.data.map((post) => (
-            <TableRow key={post.created}>
-              <TableCell component="th" scope="row" align="center">
-                {post.site}
-              </TableCell>
-              <TableCell align="center">{post.language}</TableCell>
-              <TableCell align="center">
-                <StyledLink to={`/post/${post.id}`}>{post.title}</StyledLink>
-              </TableCell>
-              <TableCell align="center">{post.user.name}</TableCell>
-              <TableCell align="center">{post.like}</TableCell>
-              <TableCell align="center">
-                {new Date(post.created).toLocaleDateString()}
-              </TableCell>
-            </TableRow>
-          ))}
+        <TableBody>
+          {!loading &&
+            posts &&
+            posts.data.map((post) => (
+              <TableRow key={post.created}>
+                <TableCell component="th" scope="row" align="center">
+                  {post.site}
+                </TableCell>
+                <TableCell align="center">{post.language}</TableCell>
+                <TableCell align="center">
+                  <StyledLink to={`/post/${post.id}`}>{post.title}</StyledLink>
+                </TableCell>
+                <TableCell align="center">{post.user.name}</TableCell>
+                <TableCell align="center">{post.like}</TableCell>
+                <TableCell align="center">
+                  {new Date(post.created).toLocaleDateString()}
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
       </Table>
     </TableContainer>
   );
 };
 
-export default PostList;
+export default withRouter(PostList);
