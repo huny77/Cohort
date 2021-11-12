@@ -108,12 +108,12 @@ public class PostService {
 			else {
 				List<Comment> comments = commentRepository.findAllByPost(post);
 				List<PostLike> likes = postLikeRepository.findAllByPost(post);
-				postInfoRepository.deleteById(postInfo.getId());
+				postInfoRepository.delete(postInfo);
 				for (PostLike postLike : likes) {
-					postLikeRepository.deleteById(postLike.getId());
+					postLikeRepository.delete(postLike);
 				}
 				for (Comment comment : comments) {
-					commentRepository.deleteById(comment.getId());
+					commentRepository.delete(comment);
 				}
 				System.out.println("postId:"+postId);
 				postRepository.deleteById(postId);

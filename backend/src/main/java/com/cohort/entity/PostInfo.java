@@ -32,8 +32,8 @@ public class PostInfo extends BaseEntity {
 	private String site;
 	
 	@JsonBackReference
-	@OnDelete(action=OnDeleteAction.CASCADE)
-	@OneToOne(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+//	@OnDelete(action=OnDeleteAction.CASCADE)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn (name = "post_id")
 	private Post post;
 }
