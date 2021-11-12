@@ -15,8 +15,9 @@ import {
 } from '../../modules/comments';
 import { changeField, initialize } from '../../modules/comments';
 import { withRouter } from 'react-router-dom';
+import qs from 'qs';
 
-const Comment = ({ match }) => {
+const Comment = ({ match, location }) => {
   const { post_id } = match.params;
   const dispatch = useDispatch();
   const {
@@ -27,6 +28,7 @@ const Comment = ({ match }) => {
     comments,
     commentsError,
     commentsLoading,
+    // lastPage,
   } = useSelector(({ comments, user, loading }) => ({
     content: comments.content,
     mail: user.mail,
@@ -35,6 +37,7 @@ const Comment = ({ match }) => {
     comments: comments.comments,
     commentsError: comments.commentsError,
     commentsLoading: loading['comments/READ_COMMENTS'],
+    // lastPage: comments.comments.data[0].totalPages,
   }));
 
   const onChangeField = useCallback(
@@ -50,7 +53,8 @@ const Comment = ({ match }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(readComments(post_id));
+    const page = 1;
+    dispatch(readComments({ post_id, page }));
     // 언마운트될 때 리덕스에서 포스트 데이터 없애기
     return () => {
       dispatch(unloadComments());
@@ -63,13 +67,14 @@ const Comment = ({ match }) => {
 
   // 코멘트 작성 성공 혹은 실패 시 할 작업
   useEffect(() => {
+    const page = 1;
     if (comment) {
-      dispatch(readComments(post_id));
+      dispatch(readComments({ post_id, page }));
     }
     if (commentError) {
       console.log(commentError);
     }
-  }, [dispatch, post_id, comment, commentError]);
+  }, [dispatch, post_id, comment, commentError, onChangeField]);
 
   // 코멘트 등록
   const onPublish = () => {
