@@ -71,7 +71,7 @@ public class PostController {
      * 
      * @return BaseResponse
      */
-	@GetMapping("/details")
+	@GetMapping("/details/{id}")
 	@ApiOperation(value = "게시판 코드 상세 조회", response = BaseResponse.class)
 	public BaseResponse showDetail(@PathVariable Long id) {
 		return postService.showDetail(id);
