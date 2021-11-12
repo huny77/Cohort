@@ -50,6 +50,7 @@ const initialState = {
   commentError: null,
   comments: null,
   commentsError: null,
+  lastPage: 1,
 };
 
 const comments = handleActions(

@@ -5,20 +5,8 @@ import Editor from '@monaco-editor/react';
 import { Toolbar } from '@mui/material';
 import { readPost, unloadPost } from '../../modules/post';
 
-const sampleData = {
-  site: 'BOJ',
-  language: 'python',
-  title: '게시글 제목',
-  script: `a = 5
-b = 3
-print(a+b)
-  `,
-  like: 3,
-  date: '2021-01-01',
-};
-
 const PostViewer = ({ match }) => {
-  const { postId } = match.params;
+  const { post_id } = match.params;
   const dispatch = useDispatch();
   const { post, error, loading } = useSelector(({ post, loading }) => ({
     post: post.post,
@@ -27,12 +15,12 @@ const PostViewer = ({ match }) => {
   }));
 
   useEffect(() => {
-    // dispatch(readPost(postId));
+    dispatch(readPost(post_id));
     // 언마운트될 때 리덕스에서 포스트 데이터 없애기
     return () => {
       dispatch(unloadPost());
     };
-  }, [dispatch, postId]);
+  }, [dispatch, post_id]);
 
   // 에러 발생 시
   if (error) {
@@ -56,15 +44,15 @@ const PostViewer = ({ match }) => {
           justifyContent: 'space-between',
         }}
       >
-        <div>{sampleData.site}</div>
-        <div>{sampleData.language}</div>
-        <div>{sampleData.title}</div>
-        <div>{sampleData.date}</div>
+        <div>{post.data.site}</div>
+        <div>{post.data.language}</div>
+        <div>{post.data.title}</div>
+        <div>{post.data.created}</div>
       </Toolbar>
       <Editor
         height="50vh"
-        language={sampleData.language}
-        value={sampleData.script}
+        language={post.data.language}
+        value={post.data.content}
         theme="vs-dark" // light
         options={{ readOnly: 'true' }}
       />

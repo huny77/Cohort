@@ -19,7 +19,5 @@ export const listPosts = ({ page }) => {
 };
 
 export const readPost = (id) => {
-  const test = '{id}';
-
-  return client.get(`/api/posts/${test}?id=${id}`);
+  return client.get(`/app/post/details/${id}`);
 };

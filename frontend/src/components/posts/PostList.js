@@ -16,7 +16,7 @@ import qs from 'qs';
 
 const StyledTableCell = styled(TableCell)`
   font-weight: bolder;
-  background-color: #F1F3F5;
+  background-color: #f1f3f5;
 `;
 
 const RecommendTableCell = styled(TableCell)`
@@ -31,20 +31,22 @@ function timeForToday(value) {
   const today = new Date();
   const timeValue = new Date(value);
 
-  const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
+  const betweenTime = Math.floor(
+    (today.getTime() - timeValue.getTime()) / 1000 / 60,
+  );
   if (betweenTime < 1) return '방금전';
   if (betweenTime < 60) {
-      return `${betweenTime}분전`;
+    return `${betweenTime}분전`;
   }
 
   const betweenTimeHour = Math.floor(betweenTime / 60);
   if (betweenTimeHour < 24) {
-      return `${betweenTimeHour}시간전`;
+    return `${betweenTimeHour}시간전`;
   }
 
   const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
   if (betweenTimeDay < 365) {
-      return `${betweenTimeDay}일전`;
+    return `${betweenTimeDay}일전`;
   }
 
   return `${Math.floor(betweenTimeDay / 365)}년전`;
@@ -89,20 +91,33 @@ const PostList = ({ location }) => {
             posts &&
             posts.data.map((post) => (
               <TableRow key={post.created}>
-                <TableCell component="th" scope="row" align="center" style={{ width: 100 }}>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  align="center"
+                  style={{ width: 100 }}
+                >
                   {post.id}
                 </TableCell>
-                <TableCell align="center" style={{ width: 100 }}>{post.site}</TableCell>
-                <TableCell align="center" style={{ width: 100 }}>{post.language}</TableCell>
+                <TableCell align="center" style={{ width: 100 }}>
+                  {post.site}
+                </TableCell>
+                <TableCell align="center" style={{ width: 100 }}>
+                  {post.language}
+                </TableCell>
                 <TableCell align="center">
                   <StyledLink to={`/post/${post.id}`}>{post.title}</StyledLink>
                 </TableCell>
-                <TableCell align="center" style={{ width: 150 }}>{post.user.name}</TableCell>
+                <TableCell align="center" style={{ width: 150 }}>
+                  {post.user.name}
+                </TableCell>
                 <TableCell align="center" style={{ width: 100 }}>
                   {/* {new Date(post.created).toLocaleDateString()} */}
                   {timeForToday(post.created)}
                 </TableCell>
-                <RecommendTableCell align="center" style={{ width: 100 }}>{post.like}</RecommendTableCell>
+                <RecommendTableCell align="center" style={{ width: 100 }}>
+                  {post.like}
+                </RecommendTableCell>
               </TableRow>
             ))}
         </TableBody>
