@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -57,7 +58,7 @@ public class PostService {
 				size = 10;
 			}
 			
-			Page<Post> posts = postRepository.findAll(PageRequest.of(page, size));
+			Page<Post> posts = postRepository.findAll(PageRequest.of(page, size, Sort.by("created").descending()));
 			int totalPages = posts.getTotalPages();
 			List<PostDto> list = new ArrayList<PostDto>();
 			for (Post p : posts) {
