@@ -1,4 +1,5 @@
 import client from './client';
+import qs from 'qs';
 
 export const writePost = ({ language, site, title, content, mail }) =>
   client.post('/app/post', {
@@ -9,4 +10,16 @@ export const writePost = ({ language, site, title, content, mail }) =>
     mail,
   });
 
-export const listPosts = () => client.get('/app/post');
+export const listPosts = ({ page }) => {
+  const queryString = qs.stringify({
+    page,
+  });
+
+  return client.get(`/app/post?${queryString}`);
+};
+
+export const readPost = (id) => {
+  const test = '{id}';
+
+  return client.get(`/api/posts/${test}?id=${id}`);
+};
