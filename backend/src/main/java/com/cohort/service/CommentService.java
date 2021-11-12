@@ -94,7 +94,6 @@ public class CommentService {
 				size = 10;
 			}
 			
-			System.out.println(post);
 			Pageable pageable = PageRequest.of(page, size);
 			Page<Comment> list = commentRepository.findAllByPost(post, pageable);
 			int totalPages = list.getTotalPages();
@@ -103,7 +102,6 @@ public class CommentService {
 				User user = userRepository.findById(c.getUser().getId()).orElse(null);
 				dtoList.add(new CommentDto(c, user, totalPages));
 			}
-			System.out.println(dtoList);
 			res = new BaseResponse("success",dtoList);
 		}catch (Exception e) {
 			res = new BaseResponse("fail",e.getMessage());

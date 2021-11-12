@@ -13,6 +13,7 @@ import org.hibernate.criterion.Distinct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -47,11 +48,10 @@ public class PostService {
 		BaseResponse response = null;
 		
 		if (page > 0) --page;
-		int size = 0;
+		int size = 10;
 		try {
 			int totalPost = (int)postRepository.count();
-			
-			if (totalPost < 10) {
+			if (totalPost <= 10) {
 				size = totalPost;
 			} else {
 				size = 10;
@@ -59,17 +59,11 @@ public class PostService {
 			
 			Page<Post> posts = postRepository.findAll(PageRequest.of(page, size));
 			int totalPages = posts.getTotalPages();
-			List<Integer> likeList = new ArrayList<>();
-			List<PostInfo> infoList = new ArrayList<>();
-			for (Post p : posts) {
-				int count = postLikeRepository.countByPostId(p.getId());
-				likeList.add(count);
-				PostInfo postInfo = postInfoRepository.findByPostId(p.getId());
-				infoList.add(postInfo);
-			}
 			List<PostDto> list = new ArrayList<PostDto>();
-			for (int i = 0; i < posts.getSize(); i++) {
-				list.add(new PostDto(posts.getContent().get(i), likeList.get(i), infoList.get(i), totalPages));
+			for (Post p : posts) {
+				int like = postLikeRepository.countByPostId(p.getId());
+				PostInfo postInfo = postInfoRepository.findByPostId(p.getId());
+				list.add(new PostDto(p, like, postInfo, totalPages));
 			}
 			response = new BaseResponse("success", list);
 		} catch (Exception e) {
