@@ -46,7 +46,7 @@ const CodeEditor = () => {
     onChangeField({ key: 'content', value: e });
   };
   const onPublish = () => {
-    console.log(mail);
+    console.log(language, site, title, content, mail);
     dispatch(
       writePost({
         language,

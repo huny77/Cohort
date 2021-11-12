@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PostList from '../components/posts/PostList';
+import PaginationPostList from '../components/posts/PaginationPostList';
 
 const PostListContainer = styled.div`
   max-width: 80%;
@@ -15,6 +16,7 @@ const PostListPage = () => {
       <PostListContainer>
         <PostList />
       </PostListContainer>
+      <PaginationPostList />
     </>
   );
 };
