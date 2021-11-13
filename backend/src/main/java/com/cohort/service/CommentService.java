@@ -88,9 +88,9 @@ public class CommentService {
 				res = new BaseResponse("fail","존재하지 않는 post id 입니다");
 			}
 			
-			int totalComment = (int) commentRepository.countByPost(post);
-			if (totalComment < 10) {
-				size = totalComment;
+			int totalComments = (int) commentRepository.countByPost(post);
+			if (totalComments < 10) {
+				size = totalComments;
 			} else {
 				size = 10;
 			}
@@ -101,7 +101,7 @@ public class CommentService {
 			List<CommentDto> dtoList = new ArrayList<>();
 			for (Comment c : list) {
 				User user = userRepository.findById(c.getUser().getId()).orElse(null);
-				dtoList.add(new CommentDto(c, user, totalPages));
+				dtoList.add(new CommentDto(c, user, totalPages, totalComments));
 			}
 			res = new BaseResponse("success",dtoList);
 		}catch (Exception e) {
