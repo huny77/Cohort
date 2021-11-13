@@ -1,18 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { Toolbar } from '@mui/material';
 import { readPost, unloadPost } from '../../modules/post';
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { removePost } from '../../lib/api/posts';
 
-const PostViewer = ({ match }) => {
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+const PostViewer = ({ match, history }) => {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const { post_id } = match.params;
   const dispatch = useDispatch();
-  const { post, error, loading } = useSelector(({ post, loading }) => ({
-    post: post.post,
-    error: post.error,
-    loading: loading['post/READ_POST'],
-  }));
+  const { post, error, loading, mail } = useSelector(
+    ({ post, loading, user }) => ({
+      post: post.post,
+      error: post.error,
+      loading: loading['post/READ_POST'],
+      mail: user.mail,
+    }),
+  );
 
   useEffect(() => {
     dispatch(readPost(post_id));
@@ -35,6 +58,16 @@ const PostViewer = ({ match }) => {
     return null;
   }
 
+  // 게시글 삭제 함수
+  const onRemove = async () => {
+    try {
+      await removePost(post.data.id);
+      history.push('/post');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div>
       <Toolbar
@@ -56,6 +89,31 @@ const PostViewer = ({ match }) => {
         theme="vs-dark" // light
         options={{ readOnly: 'true' }}
       />
+      {!loading && post && post.data.user.mail === mail && (
+        <>
+          <Button variant="contained" onClick={handleOpen}>
+            게시글 삭제
+          </Button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                게시글을 정말 삭제하시겠습니까?
+              </Typography>
+              <Button variant="contained" onClick={onRemove}>
+                삭제
+              </Button>
+              <Button variant="contained" onClick={handleClose}>
+                취소
+              </Button>
+            </Box>
+          </Modal>
+        </>
+      )}
     </div>
   );
 };
