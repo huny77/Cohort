@@ -8,17 +8,19 @@ const PostContainer = styled.div`
   height: 100vh;
   max-width: 80%;
   margin: 0 auto;
-  margin-top: 7rem;
   align-items: center;
 `;
 
 const WritePage = () => {
   return (
-    <PostContainer>
-      <CodeEditor />
-      <div>결과:</div>
-      <button>run</button>
-    </PostContainer>
+    <div>
+      <div style={{ height: '4rem' }}></div>
+      <PostContainer>
+        <CodeEditor />
+        <div>결과:</div>
+        <button>run</button>
+      </PostContainer>
+    </div>
   );
 };
 

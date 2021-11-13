@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
@@ -16,8 +16,9 @@ import {
 } from '../../modules/comments';
 import { changeField, initialize } from '../../modules/comments';
 import { withRouter } from 'react-router-dom';
-import qs from 'qs';
 import { Avatar } from '@mui/material';
+import Pagination from 'react-js-pagination';
+import './PaginationComment.css';
 
 function timeForToday(value) {
   const today = new Date();
@@ -44,7 +45,8 @@ function timeForToday(value) {
   return `${Math.floor(betweenTimeDay / 365)}년전`;
 }
 
-const Comment = ({ match, location }) => {
+const Comment = ({ match, location, history }) => {
+  const [page, setPage] = useState(1);
   const { post_id } = match.params;
   const dispatch = useDispatch();
   const {
@@ -55,8 +57,10 @@ const Comment = ({ match, location }) => {
     comments,
     commentsError,
     commentsLoading,
+    post,
+    postLoading,
     // lastPage,
-  } = useSelector(({ comments, user, loading }) => ({
+  } = useSelector(({ comments, user, loading, post }) => ({
     content: comments.content,
     mail: user.mail,
     comment: comments.comment,
@@ -64,6 +68,8 @@ const Comment = ({ match, location }) => {
     comments: comments.comments,
     commentsError: comments.commentsError,
     commentsLoading: loading['comments/READ_COMMENTS'],
+    post: post.post,
+    postLoading: loading['post/READ_POST'],
     // lastPage: comments.comments.data[0].totalPages,
   }));
 
@@ -80,7 +86,6 @@ const Comment = ({ match, location }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const page = 1;
     dispatch(readComments({ post_id, page }));
     // 언마운트될 때 리덕스에서 포스트 데이터 없애기
     return () => {
@@ -94,14 +99,14 @@ const Comment = ({ match, location }) => {
 
   // 코멘트 작성 성공 혹은 실패 시 할 작업
   useEffect(() => {
-    const page = 1;
     if (comment) {
       dispatch(readComments({ post_id, page }));
+      dispatch(initialize());
     }
     if (commentError) {
       console.log(commentError);
     }
-  }, [dispatch, post_id, comment, commentError, onChangeField]);
+  }, [dispatch, post_id, comment, commentError, page]);
 
   // 코멘트 등록
   const onPublish = () => {
@@ -114,72 +119,111 @@ const Comment = ({ match, location }) => {
     );
   };
 
+  const onKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      onPublish();
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setPage(page);
+    dispatch(readComments({ post_id, page }));
+  };
+
   return (
     <>
-      <div style={{ border:"1px solid #a0a0a0", borderRadius: "5px", padding: "5px" }}>댓글(개수)</div>
+      <div
+        style={{
+          border: '1px solid #a0a0a0',
+          borderRadius: '5px',
+          padding: '5px',
+        }}
+      >
+        {!postLoading && post && post.status === 'success'
+          ? `댓글(${post.data.comments.length})`
+          : `댓글(0)`}
+      </div>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {!commentsLoading &&
           comments &&
+          comments.status === 'success' &&
           comments.data.map((comment) => (
-            <ListItem alignItems="flex-start" key={comment.id}>
-              <ListItemAvatar>
-                <Avatar alt="profile" src={comment.user.image} />
-              </ListItemAvatar>
-              <ListItemText
-                primary={
-                  <>
-                  <Typography
-                    sx={{ display: 'inline' }}
-                    component="div"
-                    variant="button"
-                    color="text.primary"
-                  >
-                    {comment.user.name}
-                  </Typography>
-                  <Typography
-                    sx={{ display: 'inline', m:2}}
-                    component="div"
-                    variant="overline"
-                    color="text.primary"
-                  >
-                    {timeForToday(comment.created)}
-                  </Typography>
-                  </>
-                }
-                secondary={
-                  <>
-                    <Typography
-                      sx={{ display: 'inline' }}
-                      component="span"
-                      variant="body2"
-                      color="text.primary"
-                    >
-                      {comment.content}
-                    </Typography>
-                    <Divider component="li" sx={{mt:1}} />
-                  </>
-                }
-              />
-            </ListItem>
+            <>
+              <ListItem alignItems="flex-start" key={comment.id}>
+                <ListItemAvatar>
+                  <Avatar alt="profile" src={comment.user.image} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <>
+                      <Typography
+                        sx={{ display: 'inline' }}
+                        component="div"
+                        variant="button"
+                        color="text.primary"
+                      >
+                        {comment.user.name}
+                      </Typography>
+                      <Typography
+                        sx={{ display: 'inline', m: 2 }}
+                        component="div"
+                        variant="overline"
+                        color="text.primary"
+                      >
+                        {timeForToday(comment.created)}
+                      </Typography>
+                    </>
+                  }
+                  secondary={
+                    <>
+                      <Typography
+                        sx={{ display: 'inline' }}
+                        component="span"
+                        variant="body2"
+                        color="text.primary"
+                      >
+                        {comment.content}
+                      </Typography>
+                      <Divider component="li" sx={{ mt: 1 }} />
+                    </>
+                  }
+                />
+              </ListItem>
+            </>
           ))}
-      </List>
-      <Box
-        sx={{
-          maxWidth: '100%',
-        }}
-      >
-        <div style={{ display: 'flex' }}>
-          <TextField
-            fullWidth
-            label="댓글작성"
-            id="fullWidth"
-            onChange={onChangecontent}
+        {!commentsLoading && comments && comments.status === 'success' && (
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={1}
+            totalItemsCount={comments.data[0].totalPages}
+            pageRangeDisplayed={5}
+            prevPageText={'‹'}
+            nextPageText={'›'}
+            onChange={handlePageChange}
           />
-          <Button variant="outlined" onClick={onPublish}>
-            등록
-          </Button>
-        </div>
-      </Box>
+        )}
+      </List>
+      {mail && (
+        <Box
+          sx={{
+            maxWidth: '100%',
+          }}
+        >
+          <div style={{ display: 'flex' }}>
+            <TextField
+              fullWidth
+              label="댓글작성"
+              id="fullWidth"
+              value={content}
+              onChange={onChangecontent}
+              onKeyPress={onKeyPress}
+            />
+            <Button variant="outlined" onClick={onPublish}>
+              등록
+            </Button>
+          </div>
+        </Box>
+      )}
     </>
   );
 };
