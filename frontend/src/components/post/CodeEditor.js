@@ -5,20 +5,28 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeField, initialize, writePost } from '../../modules/write';
 import { Input } from '@mui/material';
+import { withRouter } from 'react-router';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import { ContentCopyTwoTone } from '@mui/icons-material';
 
-const CodeEditor = () => {
+const CodeEditor = ({ history }) => {
+  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const { language, site, title, content, mail } = useSelector(
+  const { language, site, title, content, mail, post, postError } = useSelector(
     ({ write, user }) => ({
       language: write.language,
       site: write.site,
       title: write.title,
       content: write.content,
       mail: user.mail,
+      post: write.post,
+      postError: write.postError,
     }),
   );
   const onChangeField = useCallback(
@@ -45,7 +53,17 @@ const CodeEditor = () => {
   const onChangeContent = (e) => {
     onChangeField({ key: 'content', value: e });
   };
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
   const onPublish = () => {
+    if (!title || !content) {
+      return setOpen(true);
+    }
     console.log(language, site, title, content, mail);
     dispatch(
       writePost({
@@ -57,6 +75,19 @@ const CodeEditor = () => {
       }),
     );
   };
+  // 취소
+  const onCancel = () => {
+    history.goBack();
+  };
+  // 성공 혹은 실패 시 할 작업
+  useEffect(() => {
+    if (post) {
+      history.push('/post');
+    }
+    if (postError) {
+      console.log(postError);
+    }
+  }, [history, post, postError]);
 
   return (
     <>
@@ -67,6 +98,12 @@ const CodeEditor = () => {
           justifyContent: 'flex-start',
         }}
       >
+        <Button variant="contained" onClick={onCancel}>
+          취소
+        </Button>
+        <Button variant="contained" onClick={onPublish}>
+          작성
+        </Button>
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">language</InputLabel>
           <Select
@@ -113,10 +150,20 @@ const CodeEditor = () => {
         // options={{ readOnly: 'true' }}
       />
       {/* {result} */}
-      <button onClick={onPublish}>제출</button>
       <div>run결과:</div>
+
+      <Snackbar
+        open={open}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error">
+          제목과 코드를 입력해주세요.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
 
-export default CodeEditor;
+export default withRouter(CodeEditor);
