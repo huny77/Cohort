@@ -21,3 +21,7 @@ export const listPosts = ({ page }) => {
 export const readPost = (id) => {
   return client.get(`/app/post/details/${id}`);
 };
+
+export const removePost = (id) => {
+  return client.delete(`/app/post/${id}`);
+};
