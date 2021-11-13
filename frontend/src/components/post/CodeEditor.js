@@ -64,7 +64,6 @@ const CodeEditor = ({ history }) => {
     if (!title || !content) {
       return setOpen(true);
     }
-    console.log(language, site, title, content, mail);
     dispatch(
       writePost({
         language,
