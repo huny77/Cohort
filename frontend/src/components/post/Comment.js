@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
@@ -19,6 +19,8 @@ import { withRouter } from 'react-router-dom';
 import { Avatar } from '@mui/material';
 import Pagination from 'react-js-pagination';
 import './PaginationComment.css';
+import { removeComment } from '../../lib/api/comments';
+import Modal from '@mui/material/Modal';
 
 function timeForToday(value) {
   const today = new Date();
@@ -45,7 +47,22 @@ function timeForToday(value) {
   return `${Math.floor(betweenTimeDay / 365)}년전`;
 }
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 const Comment = ({ match, location, history }) => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [page, setPage] = useState(1);
   const { post_id } = match.params;
   const dispatch = useDispatch();
@@ -91,7 +108,7 @@ const Comment = ({ match, location, history }) => {
     return () => {
       dispatch(unloadComments());
     };
-  }, [dispatch, post_id]);
+  }, [dispatch, post_id, page]);
 
   const onChangecontent = (e) => {
     onChangeField({ key: 'content', value: e.target.value });
@@ -130,6 +147,17 @@ const Comment = ({ match, location, history }) => {
     dispatch(readComments({ post_id, page }));
   };
 
+  // 댓글 삭제
+  const onRemove = async (id) => {
+    try {
+      await removeComment(id);
+      dispatch(readComments({ post_id, page }));
+      handleClose();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <>
       <div
@@ -148,14 +176,14 @@ const Comment = ({ match, location, history }) => {
           comments &&
           comments.status === 'success' &&
           comments.data.map((comment) => (
-            <>
-              <ListItem alignItems="flex-start" key={comment.id}>
+            <React.Fragment key={comment.id}>
+              <ListItem alignItems="flex-start">
                 <ListItemAvatar>
                   <Avatar alt="profile" src={comment.user.image} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={
-                    <>
+                    <React.Fragment>
                       <Typography
                         sx={{ display: 'inline' }}
                         component="div"
@@ -172,10 +200,10 @@ const Comment = ({ match, location, history }) => {
                       >
                         {timeForToday(comment.created)}
                       </Typography>
-                    </>
+                    </React.Fragment>
                   }
                   secondary={
-                    <>
+                    <React.Fragment>
                       <Typography
                         sx={{ display: 'inline' }}
                         component="span"
@@ -184,12 +212,45 @@ const Comment = ({ match, location, history }) => {
                       >
                         {comment.content}
                       </Typography>
-                      <Divider component="li" sx={{ mt: 1 }} />
-                    </>
+                      {/* <Divider component="li" sx={{ mt: 1 }} /> */}
+                    </React.Fragment>
                   }
                 />
+                {comment.user.mail === mail && (
+                  <React.Fragment>
+                    <Button variant="outlined" onClick={handleOpen}>
+                      댓글 삭제
+                    </Button>
+                    <Modal
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box sx={style}>
+                        <Typography
+                          id="modal-modal-title"
+                          variant="h6"
+                          component="h2"
+                        >
+                          댓글을 정말 삭제하시겠습니까?
+                        </Typography>
+                        <Button
+                          variant="contained"
+                          onClick={() => onRemove(comment.id)}
+                        >
+                          삭제
+                        </Button>
+                        <Button variant="contained" onClick={handleClose}>
+                          취소
+                        </Button>
+                      </Box>
+                    </Modal>
+                  </React.Fragment>
+                )}
               </ListItem>
-            </>
+              <Divider />
+            </React.Fragment>
           ))}
         {!commentsLoading && comments && comments.status === 'success' && (
           <Pagination
