@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import CodeEditor from '../components/post/CodeEditor';
+import { useSelector } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 const PostContainer = styled.div`
   display: flex;
@@ -12,6 +14,14 @@ const PostContainer = styled.div`
 `;
 
 const WritePage = () => {
+  const { mail } = useSelector(({ user }) => ({
+    mail: user.mail,
+  }));
+
+  if (!mail) {
+    return <Redirect to="/" />;
+  }
+
   return (
     <div>
       <div style={{ height: '4rem' }}></div>
