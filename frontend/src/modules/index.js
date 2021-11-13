@@ -7,6 +7,7 @@ import write, { writeSaga } from './write';
 import posts, { postsSaga } from './posts';
 import comments, { commentsSaga } from './comments';
 import post, { postSaga } from './post';
+import like, { likeSaga } from './like';
 
 const rootReducer = combineReducers({
   auth,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   posts,
   comments,
   post,
+  like,
 });
 
 export function* rootSaga() {
@@ -26,6 +28,7 @@ export function* rootSaga() {
     postsSaga(),
     commentsSaga(),
     postSaga(),
+    likeSaga(),
   ]);
 }
 
