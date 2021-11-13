@@ -1,6 +1,5 @@
 import PostViewer from '../components/post/PostViewer';
 import styled from 'styled-components';
-import Like from '../components/post/Like';
 import Comment from '../components/post/Comment';
 
 const StyledDiv = styled.div`
@@ -14,7 +13,6 @@ const PostPage = () => {
     <StyledDiv>
       <div style={{ height: '6rem' }}></div>
       <PostViewer />
-      <Like />
       <Comment />
     </StyledDiv>
   );
