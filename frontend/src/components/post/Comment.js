@@ -165,8 +165,8 @@ const Comment = ({ match, location, history }) => {
         }}
       >
         {!postLoading && post && post.status === 'success'
-          ? `댓글(${post.data.comments.length})`
-          : `댓글(0)`}
+          ? `댓글(${post.data.comments.length}개)`
+          : `댓글(0)개`}
       </div>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {!commentsLoading &&
