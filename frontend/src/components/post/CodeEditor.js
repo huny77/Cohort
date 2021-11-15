@@ -1,17 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Button from '@mui/material/Button';
+import { Box, InputLabel, MenuItem, FormControl, Select, Button, Input, Alert, Snackbar } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeField, initialize, writePost } from '../../modules/write';
-import { Input } from '@mui/material';
 import { withRouter } from 'react-router';
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
 import { ContentCopyTwoTone } from '@mui/icons-material';
 
 const CodeEditor = ({ history }) => {
@@ -90,19 +82,23 @@ const CodeEditor = ({ history }) => {
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          width: '20rem',
-          justifyContent: 'flex-start',
-        }}
-      >
-        <Button variant="contained" onClick={onCancel}>
-          취소
-        </Button>
-        <Button variant="contained" onClick={onPublish}>
-          작성
-        </Button>
+      <div style={{ width: '100%' }}>
+      <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p:1, ml:1}}>
+          <Button variant="outlined" color="error" style={{ marginRight: 10}} onClick={onCancel}>
+            취소
+          </Button>
+          <Button variant="outlined" color="primary" onClick={onPublish}>
+            작성
+          </Button>
+        </Box>
+        <Box sx={{ mt:3 }}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">제목</InputLabel>
+          <Input onChange={onChangeTitle} />
+        </FormControl>
+        </Box>
+        <Box sx={{ display: 'flex', my: 3 }}>
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">language</InputLabel>
           <Select
@@ -135,11 +131,8 @@ const CodeEditor = ({ history }) => {
             <MenuItem value={'LeetCode'}>LeetCode</MenuItem>
           </Select>
         </FormControl>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">제목</InputLabel>
-          <Input style={{ width: '30rem' }} onChange={onChangeTitle} />
-        </FormControl>
-      </div>
+        </Box>
+      </Box>
       <Editor
         height="50vh"
         language={language}
@@ -161,6 +154,7 @@ const CodeEditor = ({ history }) => {
           제목과 코드를 입력해주세요.
         </Alert>
       </Snackbar>
+    </div>
     </>
   );
 };
