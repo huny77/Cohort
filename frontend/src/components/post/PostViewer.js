@@ -10,6 +10,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { removePost } from '../../lib/api/posts';
 import { addLike, removeLike } from '../../lib/api/like';
+import moment from 'moment';
 
 const style = {
   position: 'absolute',
@@ -22,6 +23,8 @@ const style = {
   boxShadow: 24,
   p: 2,
 };
+
+
 
 const PostViewer = ({ match, history }) => {
   const [open, setOpen] = React.useState(false);
@@ -123,10 +126,10 @@ const PostViewer = ({ match, history }) => {
                 게시글을 정말 삭제하시겠습니까?
               </Typography>
               <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2 }}>
-                <Button color="primary" onClick={handleClose}>
+                <Button color="primary" onClick={ handleClose }>
                   취소
                 </Button>
-                <Button color="error" onClick={() => onRemove}>
+                <Button color="error" onClick={ onRemove }>
                   삭제
                 </Button>
               </Box>
@@ -144,7 +147,8 @@ const PostViewer = ({ match, history }) => {
         <div>{post.data.site}</div>
         <div>{post.data.language}</div>
         <div>{post.data.title}</div>
-        <div>{post.data.created}</div>
+        <div>{moment(post.data.created).format('YYYY-MM-DD HH:mm:ss')}</div>
+        {/* <div>{post.data.created}</div> */}
       </Toolbar>
       <Editor
         height="50vh"
