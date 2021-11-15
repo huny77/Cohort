@@ -157,7 +157,7 @@ const PostViewer = ({ match, history }) => {
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'start',
           margin: '8px'
         }}
       >
@@ -178,7 +178,7 @@ const PostViewer = ({ match, history }) => {
           )}
 
           {!likeLoading && like && like.status === 'success' && (
-            <Box sx={{ ml: 1 }}>좋아요 {like.data.length}개</Box>
+            <Box sx={{ ml: 1 }}>{like.data.length}명이 좋아합니다.</Box>
           )}
       </div>
     </div>
