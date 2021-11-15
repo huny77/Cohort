@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
-import { Toolbar } from '@mui/material';
+import { Toolbar, Button, Modal, Box, Typography, Chip } from '@mui/material';
 import { readPost, unloadPost } from '../../modules/post';
 import { readLike, unloadLike } from '../../modules/like';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { removePost } from '../../lib/api/posts';
 import { addLike, removeLike } from '../../lib/api/like';
 
@@ -23,7 +20,7 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  p: 2,
 };
 
 const PostViewer = ({ match, history }) => {
@@ -105,6 +102,38 @@ const PostViewer = ({ match, history }) => {
 
   return (
     <div>
+      {!loading && post && post.data.user.mail === mail && (
+        <>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+            <Button variant="outlined" color="error" onClick={handleOpen} startIcon={<DeleteIcon />}>
+              글삭제
+            </Button>
+          </Box>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography
+                id="modal-modal-title"
+                variant="h6"
+              >
+                게시글을 정말 삭제하시겠습니까?
+              </Typography>
+              <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2 }}>
+                <Button color="primary" onClick={handleClose}>
+                  취소
+                </Button>
+                <Button color="error" onClick={() => onRemove}>
+                  삭제
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
+        </>
+      )}
       <Toolbar
         style={{
           backgroundColor: 'gray',
@@ -124,48 +153,20 @@ const PostViewer = ({ match, history }) => {
         theme="vs-dark" // light
         options={{ readOnly: 'true' }}
       />
-      {!loading && post && post.data.user.mail === mail && (
-        <>
-          <Button variant="contained" onClick={handleOpen}>
-            게시글 삭제
-          </Button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                게시글을 정말 삭제하시겠습니까?
-              </Typography>
-              <Button variant="contained" onClick={onRemove}>
-                삭제
-              </Button>
-              <Button variant="contained" onClick={handleClose}>
-                취소
-              </Button>
-            </Box>
-          </Modal>
-        </>
-      )}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'start',
+          margin: '8px'
         }}
       >
-        {!likeLoading && like && like.status === 'success' && (
-          <p>{like.data.length}개</p>
-        )}
-
         {/* 좋아요취소 */}
         {!likeLoading &&
           like &&
           like.status === 'success' &&
           like.data.includes(`${mail}`) &&
-          mail && <FavoriteIcon onClick={() => onRemoveLike(mail, post_id)} />}
+          mail && <FavoriteIcon color="error" onClick={() => onRemoveLike(mail, post_id)} />}
 
         {/* 좋아요등록 */}
         {!likeLoading &&
@@ -174,6 +175,10 @@ const PostViewer = ({ match, history }) => {
           !like.data.includes(`${mail}`) &&
           mail && (
             <FavoriteBorderIcon onClick={() => onAddLike({ mail, post_id })} />
+          )}
+
+          {!likeLoading && like && like.status === 'success' && (
+            <Box sx={{ ml: 1 }}>{like.data.length}명이 좋아합니다.</Box>
           )}
       </div>
     </div>

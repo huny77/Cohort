@@ -1,13 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import { ListItemAvatar } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { Box, TextField, List, ListItem, Divider, ListItemText, 
+  ListItemAvatar, Typography, Avatar, Modal, Button, IconButton  } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   writeComment,
@@ -16,11 +9,11 @@ import {
 } from '../../modules/comments';
 import { changeField, initialize } from '../../modules/comments';
 import { withRouter } from 'react-router-dom';
-import { Avatar } from '@mui/material';
 import Pagination from 'react-js-pagination';
 import './PaginationComment.css';
 import { removeComment } from '../../lib/api/comments';
-import Modal from '@mui/material/Modal';
+import DeleteIcon from '@mui/icons-material/Delete';
+import styled from 'styled-components';
 
 function timeForToday(value) {
   const today = new Date();
@@ -47,6 +40,10 @@ function timeForToday(value) {
   return `${Math.floor(betweenTimeDay / 365)}년전`;
 }
 
+const CustomizedButton = styled(IconButton)`
+  color: red;
+`;
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -56,7 +53,7 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  p: 2,
 };
 
 const Comment = ({ match, location, history }) => {
@@ -168,8 +165,8 @@ const Comment = ({ match, location, history }) => {
         }}
       >
         {!postLoading && post && post.status === 'success'
-          ? `댓글(${post.data.comments.length})`
-          : `댓글(0)`}
+          ? `댓글(${post.data.comments.length}개)`
+          : `댓글(0)개`}
       </div>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {!commentsLoading &&
@@ -212,15 +209,14 @@ const Comment = ({ match, location, history }) => {
                       >
                         {comment.content}
                       </Typography>
-                      {/* <Divider component="li" sx={{ mt: 1 }} /> */}
                     </React.Fragment>
                   }
                 />
                 {comment.user.mail === mail && (
                   <React.Fragment>
-                    <Button variant="outlined" onClick={handleOpen}>
-                      댓글 삭제
-                    </Button>
+                    <CustomizedButton aria-label="delete" color="secondary" size="large" onClick={handleOpen}>
+                      <DeleteIcon />
+                    </CustomizedButton>
                     <Modal
                       open={open}
                       onClose={handleClose}
@@ -231,19 +227,17 @@ const Comment = ({ match, location, history }) => {
                         <Typography
                           id="modal-modal-title"
                           variant="h6"
-                          component="h2"
                         >
                           댓글을 정말 삭제하시겠습니까?
                         </Typography>
-                        <Button
-                          variant="contained"
-                          onClick={() => onRemove(comment.id)}
-                        >
-                          삭제
-                        </Button>
-                        <Button variant="contained" onClick={handleClose}>
-                          취소
-                        </Button>
+                        <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2 }}>
+                          <Button color="primary" onClick={handleClose}>
+                            취소
+                          </Button>
+                          <Button color="error" onClick={() => onRemove(comment.id)}>
+                            삭제
+                          </Button>
+                        </Box>
                       </Box>
                     </Modal>
                   </React.Fragment>
