@@ -36,7 +36,7 @@ const initialState = {
   language: 'python',
   site: 'BOJ',
   title: '',
-  content: '// 코드를 입력하세요',
+  content: '',
   post: null,
   postError: null,
 };

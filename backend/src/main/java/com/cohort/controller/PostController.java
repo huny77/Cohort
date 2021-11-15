@@ -119,12 +119,12 @@ public class PostController {
 	public BaseResponse deleteComment(@PathVariable Long id) {
 		return commentService.delete(id);			
 	}
+	
 	/**
-     * 댓글 조회 API [Delete] /app/post/comments/{pid}
+     * 댓글 조회시 개수도 같이 요청하는 API [Delete] /app/post/comments/{pid}?page=1
      * 
      * @return BaseResponse
      */
-	
 	@GetMapping("/comments/{id}")
 	@ApiOperation(value = "게시판 댓글 조회",response = BaseResponse.class)
 	public BaseResponse readComment(@PathVariable Long id, @ApiParam(value = "page index 는 1부터 시작") Integer page) {

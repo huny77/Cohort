@@ -11,3 +11,7 @@ export const writeComment = ({ post_id, content, mail }) =>
 export const readComments = ({ post_id, page }) => {
   return client.get(`/app/post/comments/${post_id}?page=${page}`);
 };
+
+export const removeComment = (id) => {
+  return client.delete(`/app/post/comments/${id}`);
+};
