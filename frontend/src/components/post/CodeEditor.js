@@ -111,7 +111,7 @@ const CodeEditor = ({ history }) => {
           </Box>
           <Box sx={{ mt: 3 }}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">제목</InputLabel>
+              <InputLabel id="demo-simple-select-label" focused>제목</InputLabel>
               <Input onChange={onChangeTitle} />
             </FormControl>
           </Box>
