@@ -25,3 +25,7 @@ export const readPost = (id) => {
 export const removePost = (id) => {
   return client.delete(`/app/post/${id}`);
 };
+
+export const bestPosts = () => {
+  return client.get('/app/post/top5');
+};
