@@ -27,6 +27,7 @@ import GoogleAuth from './GoogleAuth';
 import { logout } from '../../modules/user';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import client from '../../lib/api/client';
 
 const CustomizedAppBar = styled(AppBar)`
   background-color: #f2f3f7;
@@ -81,7 +82,14 @@ const Navbar = ({ history }) => {
 
     setOpen(false);
   };
-
+  const test = () => {
+    console.log("노드서버 테스트");
+    const info = {
+      body :  "print(\"아오오오\")\nprint(\"시이이이버어어얼\")\nprint(\"왜안되냐아아아아 개같은거\")",
+      language : "python3"
+      }
+    client.post('/node/codes', info).then(res => { console.log(res) });
+  };
   return (
     <>
       <Box>
@@ -168,6 +176,7 @@ const Navbar = ({ history }) => {
               </Grid>
             </Drawer>
             {/* <CusotmizedButton>로그인</CusotmizedButton> */}
+            <button onClick={ test }>버튼</button>
             <GoogleAuth />
           </CustomizedToolbar>
         </CustomizedAppBar>
