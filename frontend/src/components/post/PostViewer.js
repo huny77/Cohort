@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
-import { Toolbar, Button, Modal, Box, Typography   } from '@mui/material';
+import { Toolbar, Button, Modal, Box, Typography, Chip } from '@mui/material';
 import { readPost, unloadPost } from '../../modules/post';
 import { readLike, unloadLike } from '../../modules/like';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -158,18 +158,15 @@ const PostViewer = ({ match, history }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          margin: '8px'
         }}
       >
-        {!likeLoading && like && like.status === 'success' && (
-          <p>{like.data.length}개</p>
-        )}
-
         {/* 좋아요취소 */}
         {!likeLoading &&
           like &&
           like.status === 'success' &&
           like.data.includes(`${mail}`) &&
-          mail && <FavoriteIcon onClick={() => onRemoveLike(mail, post_id)} />}
+          mail && <FavoriteIcon color="error" onClick={() => onRemoveLike(mail, post_id)} />}
 
         {/* 좋아요등록 */}
         {!likeLoading &&
@@ -178,6 +175,10 @@ const PostViewer = ({ match, history }) => {
           !like.data.includes(`${mail}`) &&
           mail && (
             <FavoriteBorderIcon onClick={() => onAddLike({ mail, post_id })} />
+          )}
+
+          {!likeLoading && like && like.status === 'success' && (
+            <Box sx={{ ml: 1 }}>좋아요 {like.data.length}개</Box>
           )}
       </div>
     </div>
