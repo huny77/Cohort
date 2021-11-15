@@ -1,13 +1,6 @@
 import { useEffect } from 'react';
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { styled, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { listPosts, bestPostsList } from '../../modules/posts';
@@ -99,34 +92,34 @@ const PostList = ({ location }) => {
           {!bestPostsLoading &&
             bestPosts &&
             bestPosts.data.slice(0, 3).map((bestPost) => (
-              <TableRow key={bestPost.created + bestPost.id}>
+              <TableRow key={bestPost.created + bestPost.id} style={{ backgroundColor: '#FFE7E7' }}>
                 <TableCell
                   component="th"
                   scope="row"
                   align="center"
                   style={{ width: 100 }}
                 >
-                  베스트
+                  <Chip label="Best code" color="error" variant="outlined" />
                 </TableCell>
-                <TableCell align="center" style={{ width: 100 }}>
+                <TableCell align="center" style={{ width: 100, color: '#FF4947', fontWeight: 'bold' }}>
                   {bestPost.site}
                 </TableCell>
-                <TableCell align="center" style={{ width: 100 }}>
+                <TableCell align="center" style={{ width: 100, color: '#FF4947', fontWeight: 'bold' }}>
                   {bestPost.language}
                 </TableCell>
-                <TableCell align="center">
+                <TableCell align="center" style={{ color: '#FF4947', fontWeight: 'bold' }}>
                   <StyledLink to={`/post/${bestPost.id}`}>
                     {bestPost.title}
                   </StyledLink>
                 </TableCell>
-                <TableCell align="center" style={{ width: 150 }}>
+                <TableCell align="center" style={{ width: 150, fontWeight: 'bold' }}>
                   {bestPost.user.name}
                 </TableCell>
-                <TableCell align="center" style={{ width: 100 }}>
+                <TableCell align="center" style={{ width: 100, fontWeight: 'bold' }}>
                   {/* {new Date(post.created).toLocaleDateString()} */}
                   {timeForToday(bestPost.created)}
                 </TableCell>
-                <RecommendTableCell align="center" style={{ width: 100 }}>
+                <RecommendTableCell align="center" style={{ width: 100, fontWeight: 'bold' }}>
                   {bestPost.like}
                 </RecommendTableCell>
               </TableRow>
