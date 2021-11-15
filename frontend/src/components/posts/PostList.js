@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { listPosts } from '../../modules/posts';
+import { listPosts, bestPostsList } from '../../modules/posts';
 import { Link } from 'react-router-dom';
 import qs from 'qs';
 
@@ -54,11 +54,16 @@ function timeForToday(value) {
 
 const PostList = ({ location }) => {
   const dispatch = useDispatch();
-  const { posts, error, loading } = useSelector(({ posts, loading, user }) => ({
-    posts: posts.posts,
-    error: posts.error,
-    loading: loading['posts/LIST_POSTS'],
-  }));
+  const { posts, error, loading, bestPosts, bestPostsLoading } = useSelector(
+    ({ posts, loading, user }) => ({
+      posts: posts.posts,
+      error: posts.error,
+      loading: loading['posts/LIST_POSTS'],
+      bestPosts: posts.bestPosts,
+      bestPostsError: posts.bestPostsError,
+      bestPostsLoading: loading['posts/BEST_POSTS'],
+    }),
+  );
 
   useEffect(() => {
     const { page = 1 } = qs.parse(location.search, {
@@ -70,6 +75,10 @@ const PostList = ({ location }) => {
       }),
     );
   }, [dispatch, location.search]);
+
+  useEffect(() => {
+    dispatch(bestPostsList());
+  }, [dispatch]);
 
   return (
     <TableContainer component={Paper}>
@@ -87,10 +96,45 @@ const PostList = ({ location }) => {
         </TableHead>
 
         <TableBody>
+          {!bestPostsLoading &&
+            bestPosts &&
+            bestPosts.data.slice(0, 3).map((bestPost) => (
+              <TableRow key={bestPost.created + bestPost.id}>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  align="center"
+                  style={{ width: 100 }}
+                >
+                  베스트
+                </TableCell>
+                <TableCell align="center" style={{ width: 100 }}>
+                  {bestPost.site}
+                </TableCell>
+                <TableCell align="center" style={{ width: 100 }}>
+                  {bestPost.language}
+                </TableCell>
+                <TableCell align="center">
+                  <StyledLink to={`/post/${bestPost.id}`}>
+                    {bestPost.title}
+                  </StyledLink>
+                </TableCell>
+                <TableCell align="center" style={{ width: 150 }}>
+                  {bestPost.user.name}
+                </TableCell>
+                <TableCell align="center" style={{ width: 100 }}>
+                  {/* {new Date(post.created).toLocaleDateString()} */}
+                  {timeForToday(bestPost.created)}
+                </TableCell>
+                <RecommendTableCell align="center" style={{ width: 100 }}>
+                  {bestPost.like}
+                </RecommendTableCell>
+              </TableRow>
+            ))}
           {!loading &&
             posts &&
             posts.data.map((post) => (
-              <TableRow key={post.created}>
+              <TableRow key={post.created + post.id}>
                 <TableCell
                   component="th"
                   scope="row"
