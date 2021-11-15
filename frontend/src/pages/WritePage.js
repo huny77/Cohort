@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import CodeEditor from '../components/post/CodeEditor';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import CodeResult from '../components/post/CodeResult';
 
 const PostContainer = styled.div`
   display: flex;
@@ -27,8 +28,7 @@ const WritePage = () => {
       <div style={{ height: '4rem' }}></div>
       <PostContainer>
         <CodeEditor />
-        <div>결과:</div>
-        <button>run</button>
+        <CodeResult />
       </PostContainer>
     </div>
   );
