@@ -65,6 +65,20 @@ services:
       # 의존 컨테이너
     networks:
       - serve
+  node:
+    # 공개된 Image 가 아닌 Dockerfile 을 통한 빌드 이미지 사용
+    build:
+      context: ./node-backend
+    restart: always
+    # container_name: cohort_react
+    ports:
+      - 4000:4000
+    environment:
+      TZ: Asia/Seoul
+      server.address: 0.0.0.0
+      # 의존 컨테이너
+    networks:
+      - serve
 volumes:
   cohort_volume:
 networks:
