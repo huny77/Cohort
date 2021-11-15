@@ -109,12 +109,12 @@ const Navbar = ({ history }) => {
                 item
                 container
                 direction="column"
-                justifyContent="space-around"
+                justifyContent="space-between"
                 xs={12}
                 onClick={toggleDrawer(false)}
                 onKeyDown={toggleDrawer(false)}
               >
-                <Grid item xs={10}>
+                <Grid item>
                   <List>
                     <StyledLink to="/">
                       <ListItem button>
@@ -148,7 +148,7 @@ const Navbar = ({ history }) => {
                 </Grid>
 
                 {user && (
-                  <Grid item xs={2}>
+                  <Grid item>
                     <List>
                       <ListItem button>
                         <ListItemIcon>
