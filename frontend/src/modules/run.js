@@ -9,12 +9,18 @@ const INITIALIZE = 'run/INITIALIZE'; // 모든 내용 초기화
 
 const [CODE_RUN, CODE_RUN_SUCCESS, CODE_RUN_FAILURE] =
   createRequestActionTypes('run/CODE_RUN'); // 포스트 작성
+const CHANGE_FIELD = 'run/CHANGE_FIELD'; // 특정 key 값 바꾸기
 
 export const initialize = createAction(INITIALIZE);
+export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
+  key,
+  value,
+}));
 
-export const codeRun = createAction(CODE_RUN, ({ body, language }) => ({
+export const codeRun = createAction(CODE_RUN, ({ body, language, input }) => ({
   body,
   language,
+  input,
 }));
 
 // 사가 생성
@@ -26,11 +32,16 @@ export function* runSaga() {
 const initialState = {
   run: null,
   runError: null,
+  input: null,
 };
 
 const run = handleActions(
   {
     [INITIALIZE]: (state) => initialState, // initialState를 넣으면 초기 상태로 바뀜
+    [CHANGE_FIELD]: (state, { payload: { key, value } }) => ({
+      ...state,
+      [key]: value, // 특정 key 값을 업데이트
+    }),
     // 코드 run 성공
     [CODE_RUN_SUCCESS]: (state, { payload: run }) => ({
       ...state,
