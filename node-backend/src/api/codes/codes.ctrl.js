@@ -4,7 +4,7 @@ import axios from 'axios';
 // 코드 실행 결과 반환
 export const run = async (ctx) => {
   console.log(ctx.request.body);
-  const { language, body } = ctx.request.body;
+  const { language, body, input } = ctx.request.body;
   try {
     const res = await axios.post('https://api.jdoodle.com/v1/execute', {
       clientId: '89f6caa269218082b93bef047da0b81c',
@@ -13,6 +13,7 @@ export const run = async (ctx) => {
       script: body,
       language: language,
       versionIndex: '0',
+      stdin: input,
     });
     console.log(res.data);
     ctx.body = res.data;
@@ -20,3 +21,4 @@ export const run = async (ctx) => {
     ctx.throw(500, e);
   }
 };
+// https://k5b104.p.ssafy.io/node/codes
