@@ -673,14 +673,20 @@ class VideoRoomComponent extends Component {
           />
           <Box sx={{ display: 'flex' }}>
             <FormControl fullWidth>
-              <InputLabel variant="standard" htmlFor="uncontrolled-native">
+              <InputLabel variant="standard" htmlFor="select-language">
                 Language
               </InputLabel>
               <NativeSelect
                 defaultValue={'python'}
                 inputProps={{
                   name: 'language',
-                  id: 'uncontrolled-native',
+                  id: 'select-language',
+                }}
+                onChange={(e) => {
+                  this.setState({
+                    language: e.target.value,
+                  });
+                  console.log(e.target.value);
                 }}
               >
                 <option value={'python'}>python</option>
@@ -690,14 +696,20 @@ class VideoRoomComponent extends Component {
               </NativeSelect>
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel variant="standard" htmlFor="uncontrolled-native">
+              <InputLabel variant="standard" htmlFor="select-site">
                 Site
               </InputLabel>
               <NativeSelect
                 defaultValue={'BOJ'}
                 inputProps={{
                   name: 'site',
-                  id: 'uncontrolled-native',
+                  id: 'select-site',
+                }}
+                onChange={(e) => {
+                  this.setState({
+                    site: e.target.value,
+                  });
+                  console.log(e.target.site);
                 }}
               >
                 <option value={'BOJ'}>BOJ</option>
