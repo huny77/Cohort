@@ -269,7 +269,7 @@ class VideoRoomComponent extends Component {
     });
   }
 
-  updateSubscribers() {
+  updateSubscribers() {    
     var subscribers = this.remotes;
     this.setState(
       {
@@ -288,7 +288,6 @@ class VideoRoomComponent extends Component {
       },
     );
   }
-
   leaveSession() {
     const mySession = this.state.session;
 
@@ -383,43 +382,7 @@ class VideoRoomComponent extends Component {
   }
 
   subscribeToUserChanged() {
-    this.state.session.on('signal:userChanged', (event) => {
-      this.state.session
-        .signal({
-          data: this.state.output, // Any string (optional)
-          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-          type: 'output', // The type of message (optional)
-        })
-        .then(() => {
-          console.log('Message successfully sent');
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      this.state.session
-        .signal({
-          data: this.state.input, // Any string (optional)
-          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-          type: 'input', // The type of message (optional)
-        })
-        .then(() => {
-          console.log('Message successfully sent');
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      this.state.session
-        .signal({
-          data: this.state.body, // Any string (optional)
-          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-          type: 'body', // The type of message (optional)
-        })
-        .then(() => {
-          console.log('Message successfully sent');
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    this.state.session.on('signal:userChanged', (event) => {   
       let remoteUsers = this.state.subscribers;
       remoteUsers.forEach((user) => {
         if (user.getConnectionId() === event.from.connectionId) {
