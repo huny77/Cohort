@@ -23,6 +23,8 @@ import {
   Snackbar,
   NativeSelect
 } from '@mui/material';
+import { codeRun } from '../../../lib/api/run';
+import { writePost } from '../../../lib/api/posts';
 
 const StudyDiv = styled.div`
   position: absolute;
@@ -45,7 +47,7 @@ class VideoRoomComponent extends Component {
     this.layout = new OpenViduLayout();
     let sessionName = this.props.sessionName
       ? this.props.sessionName
-      : 'SessionA';
+      : 'Sessionb';
     let userName = this.props.user
       ? this.props.user
       : 'OpenVidu_User' + Math.floor(Math.random() * 100);
@@ -59,6 +61,12 @@ class VideoRoomComponent extends Component {
       subscribers: [],
       chatDisplay: 'none',
       myInput: '테스트죠',
+      body: '',
+      language: 'python',
+      input: '',
+      output: '',
+      title: '',
+      site: 'BOJ',
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -123,14 +131,40 @@ class VideoRoomComponent extends Component {
         this.subscribeToStreamCreated();
         this.connectToSession();
         var mySession = this.state.session;
-        mySession.on('signal:my-chat', (event) => {
+        mySession.on('signal:body', (event) => {
           if (
             this.state.myUserName !==
             event.from.data.substring(15, parseInt(event.from.data.length) - 2)
           ) {
-            if (this.state.myInput !== event.data) {
+            if (this.state.body !== event.data) {
               this.setState({
-                myInput: event.data,
+                body: event.data,
+              });
+              console.log('저장이됩니까');
+            }
+          }
+        });
+        mySession.on('signal:input', (event) => {
+          if (
+            this.state.myUserName !==
+            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+          ) {
+            if (this.state.body !== event.data) {
+              this.setState({
+                input: event.data,
+              });
+              console.log('저장이됩니까');
+            }
+          }
+        });
+        mySession.on('signal:output', (event) => {
+          if (
+            this.state.myUserName !==
+            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+          ) {
+            if (this.state.body !== event.data) {
+              this.setState({
+                output: event.data,
               });
               console.log('저장이됩니까');
             }
@@ -350,6 +384,42 @@ class VideoRoomComponent extends Component {
 
   subscribeToUserChanged() {
     this.state.session.on('signal:userChanged', (event) => {
+      this.state.session
+        .signal({
+          data: this.state.output, // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: 'output', // The type of message (optional)
+        })
+        .then(() => {
+          console.log('Message successfully sent');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      this.state.session
+        .signal({
+          data: this.state.input, // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: 'input', // The type of message (optional)
+        })
+        .then(() => {
+          console.log('Message successfully sent');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      this.state.session
+        .signal({
+          data: this.state.body, // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: 'body', // The type of message (optional)
+        })
+        .then(() => {
+          console.log('Message successfully sent');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       let remoteUsers = this.state.subscribers;
       remoteUsers.forEach((user) => {
         if (user.getConnectionId() === event.from.connectionId) {
@@ -536,6 +606,7 @@ class VideoRoomComponent extends Component {
     const mySessionId = this.state.mySessionId;
     const localUser = this.state.localUser;
     var chatDisplay = { display: this.state.chatDisplay };
+    const { mail, name, image } = this.props;
 
     return (
       <Box>
@@ -615,8 +686,25 @@ class VideoRoomComponent extends Component {
         <StudyDiv>
           <Editor
             height="50vh"
-            language=""
-            value=""
+            language={this.state.language}
+            value={this.state.body}
+            onChange={(e) => {
+              this.setState({
+                body: e,
+              });
+              this.state.session
+                .signal({
+                  data: e, // Any string (optional)
+                  to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                  type: 'body', // The type of message (optional)
+                })
+                .then(() => {
+                  console.log('Message successfully sent');
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }}
             theme="vs-dark" // light
             // options={{ readOnly: 'true' }}
           />
@@ -657,8 +745,43 @@ class VideoRoomComponent extends Component {
                 <option value={'LeetCode'}>LeetCode</option>
               </NativeSelect>
             </FormControl>
-          </Box>          
-          <input
+          </Box>
+          <label for="select-language">언어 선택</label>
+          <select
+            name="language"
+            id="select-language"
+            onChange={(e) => {
+              this.setState({
+                language: e.target.value,
+              });
+              console.log(e.target.value);
+            }}
+          >
+            <option value="python">python</option>
+            <option value="java">java</option>
+            <option value="cpp">cpp</option>
+            <option value="c">c</option>
+          </select>
+          <label for="select-site">사이트 선택</label>
+          <select
+            name="site"
+            id="select-site"
+            onChange={(e) => {
+              this.setState({
+                site: e.target.value,
+              });
+              console.log(e.target.site);
+            }}
+          >
+            <option value="BOJ">BOJ</option>
+            <option value="programmers">programmers</option>
+            <option value="goorm">goorm</option>
+            <option value="SWEA">SWEA</option>
+            <option value="HackerRank">HackerRank</option>
+            <option value="LeetCode">LeetCode</option>
+          </select>
+
+          {/* <input
             type="text"
             value={this.state.myInput}
             // onChange={(e) =>
@@ -683,6 +806,107 @@ class VideoRoomComponent extends Component {
                   console.error(error);
                 });
             }}
+          /> */}
+          <button
+            onClick={() => {
+              if (this.state.body) {
+                if (this.state.language === 'python') {
+                  codeRun({
+                    body: this.state.body,
+                    language: 'python3',
+                    input: this.state.input,
+                  })
+                    .then((response) => {
+                      console.log(response);
+                      this.setState({
+                        output: response.data.output,
+                      });
+                      this.state.session
+                        .signal({
+                          data: response.data.output, // Any string (optional)
+                          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                          type: 'output', // The type of message (optional)
+                        })
+                        .then(() => {
+                          console.log('Message successfully sent');
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                    });
+                }
+              } else {
+                codeRun({
+                  body: this.state.body,
+                  language: this.state.language,
+                  input: this.state.input,
+                })
+                  .then((response) => {
+                    console.log(response);
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              }
+            }}
+          >
+            코드실행
+          </button>
+          <button
+            onClick={() => {
+              writePost({
+                title: '타이틀 테스트',
+                language: this.state.language,
+                content: `${this.state.body}`,
+                site: this.state.site,
+                mail: mail,
+              })
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }}
+          >
+            코드저장
+          </button>
+
+          <div>인풋</div>
+          <Editor
+            height="15vh"
+            language={this.state.language}
+            value={this.state.input}
+            onChange={(e) => {
+              this.setState({
+                input: e,
+              });
+              this.state.session
+                .signal({
+                  data: e, // Any string (optional)
+                  to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                  type: 'input', // The type of message (optional)
+                })
+                .then(() => {
+                  console.log('Message successfully sent');
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }}
+            theme="vs-dark" // light
+            // options={{ readOnly: 'true' }}
+          />
+          <div>아웃풋</div>
+          <Editor
+            height="15vh"
+            language={this.state.language}
+            value={this.state.output}
+            theme="vs-dark" // light
+            options={{ readOnly: 'true' }}
           />
         </StudyDiv>
       </Box>
