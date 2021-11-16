@@ -72,7 +72,10 @@ export default class ToolbarComponent extends Component {
         <Toolbar className="toolbar">
           <div id="navSessionInfo">
             {this.props.sessionId && (
-              <div id="titleContent" style={{ marginLeft: '1rem' }}>
+              <div
+                id="titleContent"
+                style={{ marginLeft: '1rem', maxWidth: '15rem' }}
+              >
                 <span id="session-title">{mySessionId}</span>
               </div>
             )}
@@ -111,7 +114,7 @@ export default class ToolbarComponent extends Component {
               </IconButton>
             )}
 
-            <IconButton
+            {/* <IconButton
               color="inherit"
               className="navButton"
               onClick={this.toggleFullscreen}
@@ -121,7 +124,7 @@ export default class ToolbarComponent extends Component {
               ) : (
                 <Fullscreen />
               )}
-            </IconButton>
+            </IconButton> */}
             <Link to="/">
               <IconButton
                 color="secondary"

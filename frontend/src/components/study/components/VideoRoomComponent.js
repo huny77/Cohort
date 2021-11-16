@@ -21,10 +21,13 @@ import {
   Input,
   Alert,
   Snackbar,
-  NativeSelect
+  NativeSelect,
 } from '@mui/material';
 import { codeRun } from '../../../lib/api/run';
 import { writePost } from '../../../lib/api/posts';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
 
 const StudyDiv = styled.div`
   position: absolute;
@@ -33,7 +36,7 @@ const StudyDiv = styled.div`
   right: 0;
   height: 100%;
   width: 50%;
-  z-index: 999998;
+  /* z-index: 999998; */
 `;
 
 var localUser = new UserModel();
@@ -47,10 +50,13 @@ class VideoRoomComponent extends Component {
     this.layout = new OpenViduLayout();
     let sessionName = this.props.sessionName
       ? this.props.sessionName
-      : 'Sessionb';
+      : 'Sessionbc';
     let userName = this.props.user
       ? this.props.user
       : 'OpenVidu_User' + Math.floor(Math.random() * 100);
+    // let userName = this.props.user
+    //   ? this.props.user
+    //   : 'OpenVidu_User' + Math.floor(Math.random() * 100);
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
@@ -60,13 +66,13 @@ class VideoRoomComponent extends Component {
       localUser: undefined,
       subscribers: [],
       chatDisplay: 'none',
-      myInput: '테스트죠',
       body: '',
       language: 'python',
       input: '',
       output: '',
       title: '',
       site: 'BOJ',
+      open: false,
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -83,6 +89,19 @@ class VideoRoomComponent extends Component {
     this.toggleChat = this.toggleChat.bind(this);
     this.checkNotification = this.checkNotification.bind(this);
     this.checkSize = this.checkSize.bind(this);
+    this.modalHandleOpen = this.modalHandleOpen.bind(this);
+    this.modalHandleClose = this.modalHandleClose.bind(this);
+  }
+
+  modalHandleOpen() {
+    this.setState({
+      open: true,
+    });
+  }
+  modalHandleClose() {
+    this.setState({
+      open: false,
+    });
   }
 
   componentDidMount() {
@@ -167,6 +186,48 @@ class VideoRoomComponent extends Component {
                 output: event.data,
               });
               console.log('저장이됩니까');
+            }
+          }
+        });
+        mySession.on('signal:site', (event) => {
+          if (
+            this.state.myUserName !==
+            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+          ) {
+            if (this.state.body !== event.data) {
+              this.setState({
+                site: event.data,
+              });
+              console.log('저장이됩니까');
+              console.log(this.state.site);
+            }
+          }
+        });
+        mySession.on('signal:language', (event) => {
+          if (
+            this.state.myUserName !==
+            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+          ) {
+            if (this.state.body !== event.data) {
+              this.setState({
+                language: event.data,
+              });
+              console.log('저장이됩니까');
+              console.log(this.state.language);
+            }
+          }
+        });
+        mySession.on('signal:title', (event) => {
+          if (
+            this.state.myUserName !==
+            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+          ) {
+            if (this.state.body !== event.data) {
+              this.setState({
+                title: event.data,
+              });
+              console.log('저장이됩니까');
+              console.log(this.state.title);
             }
           }
         });
@@ -606,7 +667,7 @@ class VideoRoomComponent extends Component {
     const mySessionId = this.state.mySessionId;
     const localUser = this.state.localUser;
     var chatDisplay = { display: this.state.chatDisplay };
-    const { mail, name, image } = this.props;
+    const { mail, user, image } = this.props;
 
     return (
       <Box>
@@ -640,7 +701,7 @@ class VideoRoomComponent extends Component {
               /* right: 0; */
               height: '100%',
               width: '50%',
-              zIndex: 999998,
+              // zIndex: 999998,
             }}
           >
             {localUser !== undefined &&
@@ -683,7 +744,112 @@ class VideoRoomComponent extends Component {
               )}
           </div>
         </div>
+
         <StudyDiv>
+          <Box sx={{ display: 'flex' }}>
+            <FormControl fullWidth>
+              <InputLabel variant="standard" htmlFor="select-language">
+                Language
+              </InputLabel>
+              <NativeSelect
+                defaultValue={'python'}
+                value={this.state.language}
+                inputProps={{
+                  name: 'language',
+                  id: 'select-language',
+                }}
+                onChange={(e) => {
+                  this.setState({
+                    language: e.target.value,
+                  });
+                  this.state.session
+                    .signal({
+                      data: e.target.value, // Any string (optional)
+                      to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                      type: 'language', // The type of message (optional)
+                    })
+                    .then(() => {
+                      console.log('Message successfully sent');
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                    });
+                }}
+              >
+                <option value={'python'}>python</option>
+                <option value={'java'}>java</option>
+                <option value={'cpp'}>cpp</option>
+                <option value={'c'}>c</option>
+              </NativeSelect>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel variant="standard" htmlFor="select-site">
+                Site
+              </InputLabel>
+              <NativeSelect
+                defaultValue={'BOJ'}
+                value={this.state.site}
+                inputProps={{
+                  name: 'site',
+                  id: 'select-site',
+                }}
+                onChange={(e) => {
+                  this.setState({
+                    site: e.target.value,
+                  });
+                  this.state.session
+                    .signal({
+                      data: e.target.value, // Any string (optional)
+                      to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                      type: 'site', // The type of message (optional)
+                    })
+                    .then(() => {
+                      console.log('Message successfully sent');
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                    });
+                }}
+              >
+                <option value={'BOJ'}>BOJ</option>
+                <option value={'programmers'}>programmers</option>
+                <option value={'goorm'}>goorm</option>
+                <option value={'SWEA'}>SWEA</option>
+                <option value={'HackerRank'}>HackerRank</option>
+                <option value={'LeetCode'}>LeetCode</option>
+              </NativeSelect>
+            </FormControl>
+            <TextField
+              variant="outlined"
+              label="title"
+              value={this.state.title}
+              onChange={(e) => {
+                this.setState({
+                  title: e.target.value,
+                });
+                this.state.session
+                  .signal({
+                    data: e.target.value, // Any string (optional)
+                    to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                    type: 'title', // The type of message (optional)
+                  })
+                  .then(() => {
+                    console.log('Message successfully sent');
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              }}
+            />
+            <Button
+              variant="contained"
+              onClick={() => {
+                this.modalHandleOpen();
+              }}
+            >
+              게시판에 저장
+            </Button>
+          </Box>
           <Editor
             height="50vh"
             language={this.state.language}
@@ -708,117 +874,7 @@ class VideoRoomComponent extends Component {
             theme="vs-dark" // light
             // options={{ readOnly: 'true' }}
           />
-          <Box sx={{ display: 'flex' }}>
-            <FormControl fullWidth>
-              <InputLabel variant="standard" htmlFor="select-language">
-                Language
-              </InputLabel>
-              <NativeSelect
-                defaultValue={'python'}
-                inputProps={{
-                  name: 'language',
-                  id: 'select-language',
-                }}
-                onChange={(e) => {
-                  this.setState({
-                    language: e.target.value,
-                  });
-                  console.log(e.target.value);
-                }}
-              >
-                <option value={'python'}>python</option>
-                <option value={'java'}>java</option>
-                <option value={'cpp'}>cpp</option>
-                <option value={'c'}>c</option>
-              </NativeSelect>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel variant="standard" htmlFor="select-site">
-                Site
-              </InputLabel>
-              <NativeSelect
-                defaultValue={'BOJ'}
-                inputProps={{
-                  name: 'site',
-                  id: 'select-site',
-                }}
-                onChange={(e) => {
-                  this.setState({
-                    site: e.target.value,
-                  });
-                  console.log(e.target.site);
-                }}
-              >
-                <option value={'BOJ'}>BOJ</option>
-                <option value={'programmers'}>programmers</option>
-                <option value={'goorm'}>goorm</option>
-                <option value={'SWEA'}>SWEA</option>
-                <option value={'HackerRank'}>HackerRank</option>
-                <option value={'LeetCode'}>LeetCode</option>
-              </NativeSelect>
-            </FormControl>
-          </Box>
-          <label for="select-language">언어 선택</label>
-          <select
-            name="language"
-            id="select-language"
-            onChange={(e) => {
-              this.setState({
-                language: e.target.value,
-              });
-              console.log(e.target.value);
-            }}
-          >
-            <option value="python">python</option>
-            <option value="java">java</option>
-            <option value="cpp">cpp</option>
-            <option value="c">c</option>
-          </select>
-          <label for="select-site">사이트 선택</label>
-          <select
-            name="site"
-            id="select-site"
-            onChange={(e) => {
-              this.setState({
-                site: e.target.value,
-              });
-              console.log(e.target.site);
-            }}
-          >
-            <option value="BOJ">BOJ</option>
-            <option value="programmers">programmers</option>
-            <option value="goorm">goorm</option>
-            <option value="SWEA">SWEA</option>
-            <option value="HackerRank">HackerRank</option>
-            <option value="LeetCode">LeetCode</option>
-          </select>
 
-          {/* <input
-            type="text"
-            value={this.state.myInput}
-            // onChange={(e) =>
-            //   this.setState({
-            //     myInput: e.target.value,
-            //   })
-            // }
-            onChange={(e) => {
-              this.setState({
-                myInput: e.target.value,
-              });
-              this.state.session
-                .signal({
-                  data: e.target.value, // Any string (optional)
-                  to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-                  type: 'my-chat', // The type of message (optional)
-                })
-                .then(() => {
-                  console.log('Message successfully sent');
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-            }}
-          /> */}
           <button
             onClick={() => {
               if (this.state.body) {
@@ -849,42 +905,38 @@ class VideoRoomComponent extends Component {
                     .catch((error) => {
                       console.error(error);
                     });
-                }
-              } else {
-                codeRun({
-                  body: this.state.body,
-                  language: this.state.language,
-                  input: this.state.input,
-                })
-                  .then((response) => {
-                    console.log(response);
+                } else {
+                  codeRun({
+                    body: this.state.body,
+                    language: this.state.language,
+                    input: this.state.input,
                   })
-                  .catch((error) => {
-                    console.error(error);
-                  });
+                    .then((response) => {
+                      console.log(response);
+                      this.setState({
+                        output: response.data.output,
+                      });
+                      this.state.session
+                        .signal({
+                          data: response.data.output, // Any string (optional)
+                          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                          type: 'output', // The type of message (optional)
+                        })
+                        .then(() => {
+                          console.log('Message successfully sent');
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                    });
+                }
               }
             }}
           >
             코드실행
-          </button>
-          <button
-            onClick={() => {
-              writePost({
-                title: '타이틀 테스트',
-                language: this.state.language,
-                content: `${this.state.body}`,
-                site: this.state.site,
-                mail: mail,
-              })
-                .then((response) => {
-                  console.log(response);
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-            }}
-          >
-            코드저장
           </button>
 
           <div>인풋</div>
@@ -921,6 +973,61 @@ class VideoRoomComponent extends Component {
             options={{ readOnly: 'true' }}
           />
         </StudyDiv>
+        {/* 게시판 저장 모달 */}
+        <div>
+          <Modal
+            keepMounted
+            open={this.state.open}
+            onClose={this.modalHandleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,
+                zIndex: 999999,
+              }}
+            >
+              <>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  게시판에 코드 저장하기
+                </Typography>
+
+                <Button variant="outlined" onClick={this.modalHandleClose}>
+                  취소
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    writePost({
+                      title: this.state.title,
+                      language: this.state.language,
+                      content: `${this.state.body}`,
+                      site: this.state.site,
+                      mail: mail,
+                    })
+                      .then((response) => {
+                        console.log(response);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  }}
+                >
+                  저장
+                </Button>
+              </>
+            </Box>
+          </Modal>
+        </div>
       </Box>
     );
   }
