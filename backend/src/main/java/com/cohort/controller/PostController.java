@@ -1,8 +1,5 @@
 package com.cohort.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,14 +32,12 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/app/post")
 @RequiredArgsConstructor
 public class PostController {
-	@Autowired
+	
 	private final PostService postService;
 	
-	@Autowired
-	CommentService commentService;
+	private final CommentService commentService;
 	
-	@Autowired
-	LikeService likeService;
+	private final LikeService likeService;
 	
 	/**
      * 코드 저장 API [Post] /app/post

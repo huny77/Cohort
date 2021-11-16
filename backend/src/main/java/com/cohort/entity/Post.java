@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 public class Post extends BaseEntity {
 
 	
-	@Column (name = "title", nullable = false, length = 45)
+	@Column (name = "title", nullable = false)
 	private String title;
 	
 	@Column (name = "content", nullable = true)

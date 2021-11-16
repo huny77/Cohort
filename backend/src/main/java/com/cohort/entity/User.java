@@ -21,10 +21,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseEntity {	
-	@Column (name = "mail", nullable = false, length = 45)
+	@Column (name = "mail", nullable = false)
 	String mail;	
-	@Column (name = "name", nullable = false, length = 45)
+	@Column (name = "name", nullable = false)
 	String name;	
-	@Column (name = "image", nullable = true, length = 1000)
+	@Column (name = "image", nullable = true)
 	String image;
 }

@@ -44,7 +44,7 @@ import lombok.ToString;
 //Entity 영속성 및 업데이트에 대한 Auditing 정보를 캡처하는 JPA Entity Listener
 @EntityListeners(AuditingEntityListener.class)
 public class Comment extends BaseEntity {
-	@Column (name = "content", length = 1000)
+	@Column (name = "content")
 	private String content;
 	
 	@CreatedDate
