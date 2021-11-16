@@ -21,6 +21,7 @@ import {
   Input,
   Alert,
   Snackbar,
+  NativeSelect
 } from '@mui/material';
 
 const StudyDiv = styled.div`
@@ -619,46 +620,44 @@ class VideoRoomComponent extends Component {
             theme="vs-dark" // light
             // options={{ readOnly: 'true' }}
           />
-          <Box sx={{ display: 'flex', backgroundColor: 'blue' }}>
+          <Box sx={{ display: 'flex' }}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">language</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value=""
-                label="language"
+              <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                Language
+              </InputLabel>
+              <NativeSelect
+                defaultValue={'python'}
+                inputProps={{
+                  name: 'language',
+                  id: 'uncontrolled-native',
+                }}
               >
-                <MenuItem value={'python'}>python</MenuItem>
-                <MenuItem value={'java'}>java</MenuItem>
-                <MenuItem value={'cpp'}>cpp</MenuItem>
-                <MenuItem value={'c'}>c</MenuItem>
-              </Select>
+                <option value={'python'}>python</option>
+                <option value={'java'}>java</option>
+                <option value={'cpp'}>cpp</option>
+                <option value={'c'}>c</option>
+              </NativeSelect>
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">site</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value=""
-                label="site"
+              <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                Site
+              </InputLabel>
+              <NativeSelect
+                defaultValue={'BOJ'}
+                inputProps={{
+                  name: 'site',
+                  id: 'uncontrolled-native',
+                }}
               >
-                <MenuItem value={'BOJ'}>BOJ</MenuItem>
-                <MenuItem value={'programmers'}>programmers</MenuItem>
-                <MenuItem value={'goorm'}>goorm</MenuItem>
-                <MenuItem value={'SWEA'}>SWEA</MenuItem>
-                <MenuItem value={'HackerRank'}>HackerRank</MenuItem>
-                <MenuItem value={'LeetCode'}>LeetCode</MenuItem>
-              </Select>
+                <option value={'BOJ'}>BOJ</option>
+                <option value={'programmers'}>programmers</option>
+                <option value={'goorm'}>goorm</option>
+                <option value={'SWEA'}>SWEA</option>
+                <option value={'HackerRank'}>HackerRank</option>
+                <option value={'LeetCode'}>LeetCode</option>
+              </NativeSelect>
             </FormControl>
-          </Box>
-          <label for="select-id">점수 선택</label>
-          <select name="score" id="select-id">
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-          </select>
-
+          </Box>          
           <input
             type="text"
             value={this.state.myInput}
