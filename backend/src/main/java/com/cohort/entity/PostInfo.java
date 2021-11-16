@@ -25,10 +25,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostInfo extends BaseEntity {
 	
-	@Column (name = "language", nullable = false, length = 45)
+	@Column (name = "language", nullable = false)
 	private String language;
 	
-	@Column (name = "site", nullable = false, length = 45)
+	@Column (name = "site", nullable = false)
 	private String site;
 	
 	@JsonBackReference
