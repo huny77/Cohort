@@ -280,10 +280,9 @@ const Navbar = ({ history, location }) => {
                   <div>
                     <TextField
                       id="outlined-basic"
-                      value={user.data.mail.substring(
-                        0,
-                        parseInt(user.data.mail.length) - 10,
-                      )}
+                      value={user.data.mail
+                        .substring(0, parseInt(user.data.mail.length) - 10)
+                        .replace(/\./g, '')}
                       variant="outlined"
                       readOnly
                     />
@@ -297,10 +296,9 @@ const Navbar = ({ history, location }) => {
                   variant="outlined"
                   onClick={() => {
                     onSubmitSession(
-                      user.data.mail.substring(
-                        0,
-                        parseInt(user.data.mail.length) - 10,
-                      ),
+                      user.data.mail
+                        .substring(0, parseInt(user.data.mail.length) - 10)
+                        .replace(/\./g, ''),
                     );
                     modalHandleClose();
                     history.push('/study');
