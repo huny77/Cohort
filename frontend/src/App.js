@@ -7,10 +7,14 @@ import PostListPage from './pages/PostListPage';
 import PostPage from './pages/PostPage';
 import WritePage from './pages/WritePage';
 import StudyPage from './pages/StudyPage';
+import { Helmet } from 'react-helmet-async';
 
 const App = () => {
   return (
     <>
+      <Helmet>
+        <title>Cohort</title>
+      </Helmet>
       <CssBaseline />
       <Navbar />
       <Route path="/" component={LandingPage} exact={true} />
