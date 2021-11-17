@@ -238,7 +238,7 @@ const Navbar = ({ history, location }) => {
         autoHideDuration={2000}
         onClose={handleClose}
       >
-        <MuiAlert onClose={handleClose} severity="success">
+        <MuiAlert onClose={handleClose} variant="filled" severity="success">
           로그아웃에 성공했습니다.
         </MuiAlert>
       </Snackbar>
@@ -248,7 +248,11 @@ const Navbar = ({ history, location }) => {
         autoHideDuration={2000}
         onClose={withdrawalHandleClose}
       >
-        <MuiAlert onClose={withdrawalHandleClose} severity="success">
+        <MuiAlert
+          onClose={withdrawalHandleClose}
+          variant="filled"
+          severity="success"
+        >
           회원탈퇴에 성공했습니다.
         </MuiAlert>
       </Snackbar>

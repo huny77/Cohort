@@ -28,6 +28,7 @@ import { writePost } from '../../../lib/api/posts';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
+import MuiAlert from '@mui/material/Alert';
 
 const StudyDiv = styled.div`
   position: absolute;
@@ -73,6 +74,8 @@ class VideoRoomComponent extends Component {
       title: '',
       site: 'BOJ',
       open: false,
+      alertOpen: false,
+      validOpen: false,
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -91,6 +94,8 @@ class VideoRoomComponent extends Component {
     this.checkSize = this.checkSize.bind(this);
     this.modalHandleOpen = this.modalHandleOpen.bind(this);
     this.modalHandleClose = this.modalHandleClose.bind(this);
+    this.alertHandleClose = this.alertHandleClose.bind(this);
+    this.validHandleClose = this.validHandleClose.bind(this);
   }
 
   modalHandleOpen() {
@@ -101,6 +106,23 @@ class VideoRoomComponent extends Component {
   modalHandleClose() {
     this.setState({
       open: false,
+    });
+  }
+
+  alertHandleClose(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({
+      alertOpen: false,
+    });
+  }
+  validHandleClose(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({
+      validOpen: false,
     });
   }
 
@@ -970,19 +992,30 @@ class VideoRoomComponent extends Component {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    writePost({
-                      title: this.state.title,
-                      language: this.state.language,
-                      content: `${this.state.body}`,
-                      site: this.state.site,
-                      mail: mail,
-                    })
-                      .then((response) => {
-                        console.log(response);
-                      })
-                      .catch((error) => {
-                        console.error(error);
+                    if (!this.state.title || !this.state.body) {
+                      this.setState({
+                        validOpen: true,
                       });
+                    } else {
+                      writePost({
+                        title: this.state.title,
+                        language: this.state.language,
+                        content: `${this.state.body}`,
+                        site: this.state.site,
+                        mail: mail,
+                      })
+                        .then((response) => {
+                          if (response.data.status === 'success') {
+                            this.setState({
+                              alertOpen: true,
+                            });
+                            this.modalHandleClose();
+                          }
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    }
                   }}
                 >
                   저장
@@ -991,6 +1024,37 @@ class VideoRoomComponent extends Component {
             </Box>
           </Modal>
         </div>
+        <Snackbar
+          open={this.state.alertOpen}
+          anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+          autoHideDuration={2000}
+          onClose={this.alertHandleClose}
+        >
+          <MuiAlert
+            onClose={this.alertHandleClose}
+            variant="filled"
+            severity="success"
+            style={{ backgroundColor: '#00c853' }}
+          >
+            게시글 저장에 성공했습니다.
+          </MuiAlert>
+        </Snackbar>
+
+        <Snackbar
+          open={this.state.validOpen}
+          anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+          autoHideDuration={2000}
+          onClose={this.validHandleClose}
+        >
+          <MuiAlert
+            onClose={this.validHandleClose}
+            variant="filled"
+            severity="warning"
+            style={{ backgroundColor: '#f44336' }}
+          >
+            제목과 코드를 입력해주세요.
+          </MuiAlert>
+        </Snackbar>
       </Box>
     );
   }
