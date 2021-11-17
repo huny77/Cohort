@@ -152,8 +152,8 @@ class VideoRoomComponent extends Component {
         var mySession = this.state.session;
         mySession.on('signal:body', (event) => {
           if (
-            this.state.myUserName !==
-            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+            this.state.session.connection.connectionId !==
+            event.from.connectionId
           ) {
             if (this.state.body !== event.data) {
               this.setState({
@@ -165,8 +165,8 @@ class VideoRoomComponent extends Component {
         });
         mySession.on('signal:input', (event) => {
           if (
-            this.state.myUserName !==
-            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+            this.state.session.connection.connectionId !==
+            event.from.connectionId
           ) {
             if (this.state.body !== event.data) {
               this.setState({
@@ -178,8 +178,8 @@ class VideoRoomComponent extends Component {
         });
         mySession.on('signal:output', (event) => {
           if (
-            this.state.myUserName !==
-            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+            this.state.session.connection.connectionId !==
+            event.from.connectionId
           ) {
             if (this.state.body !== event.data) {
               this.setState({
@@ -191,8 +191,8 @@ class VideoRoomComponent extends Component {
         });
         mySession.on('signal:site', (event) => {
           if (
-            this.state.myUserName !==
-            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+            this.state.session.connection.connectionId !==
+            event.from.connectionId
           ) {
             if (this.state.body !== event.data) {
               this.setState({
@@ -205,8 +205,8 @@ class VideoRoomComponent extends Component {
         });
         mySession.on('signal:language', (event) => {
           if (
-            this.state.myUserName !==
-            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+            this.state.session.connection.connectionId !==
+            event.from.connectionId
           ) {
             if (this.state.body !== event.data) {
               this.setState({
@@ -219,8 +219,8 @@ class VideoRoomComponent extends Component {
         });
         mySession.on('signal:title', (event) => {
           if (
-            this.state.myUserName !==
-            event.from.data.substring(15, parseInt(event.from.data.length) - 2)
+            this.state.session.connection.connectionId !==
+            event.from.connectionId
           ) {
             if (this.state.body !== event.data) {
               this.setState({
@@ -330,7 +330,7 @@ class VideoRoomComponent extends Component {
     });
   }
 
-  updateSubscribers() {    
+  updateSubscribers() {
     var subscribers = this.remotes;
     this.setState(
       {
@@ -443,7 +443,7 @@ class VideoRoomComponent extends Component {
   }
 
   subscribeToUserChanged() {
-    this.state.session.on('signal:userChanged', (event) => {   
+    this.state.session.on('signal:userChanged', (event) => {
       let remoteUsers = this.state.subscribers;
       remoteUsers.forEach((user) => {
         if (user.getConnectionId() === event.from.connectionId) {
