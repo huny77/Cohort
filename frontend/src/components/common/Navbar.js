@@ -359,36 +359,43 @@ const Navbar = ({ history, location }) => {
             {user ? (
               // 로그인을 했을 때
               <>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  스터디룸 참여하기
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  접속 코드를 입력해주세요
-                </Typography>
-                {user && user.status === 'success' && (
-                  <div>
-                    <TextField
-                      id="outlined-basic"
-                      variant="outlined"
-                      value={session}
-                      onChange={(e) => setSession(e.target.value)}
-                    />
-                  </div>
-                )}
-
-                <Button variant="outlined" onClick={enterModalHandleClose}>
-                  취소
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    onSubmitSession(session);
-                    enterModalHandleClose();
-                    history.push('/study');
-                  }}
-                >
-                  참여
-                </Button>
+                <Box sx={{p:3}}>
+                  <Typography id="modal-modal-title" variant="h5" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom:10 }}>
+                    스터디룸 참여하기
+                  </Typography>
+                  <Typography id="modal-modal-title" variant="body1" style={{ color: 'gray', textAlign: 'center', marginBottom:30 }}>
+                    아래에 접속 코드를 입력하여 스터디룸에 참가하세요.
+                  </Typography>
+                  <Typography id="modal-modal-description" variant="button" sx={{ mt: 2 }}>
+                    방 접속 코드
+                  </Typography>
+                  {user && user.status === 'success' && (
+                    <FormControl fullWidth>
+                      <TextField
+                        id="filled-required"
+                        variant="filled"
+                        value={session}
+                        onChange={(e) => setSession(e.target.value)}
+                        size="small"
+                      />
+                    </FormControl>
+                  )}
+                </Box>
+                <Box sx={{display:'flex', justifyContent: 'space-between', backgroundColor: '#EEEEEE', p:2}}>
+                  <Button variant="text" onClick={enterModalHandleClose} style={{ color: 'black' }}>
+                    뒤로 가기
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      onSubmitSession(session);
+                      enterModalHandleClose();
+                      history.push('/study');
+                    }}
+                  >
+                    참가하기
+                  </Button>
+                </Box>
               </>
             ) : (
               // 로그인하지 않았을 때
