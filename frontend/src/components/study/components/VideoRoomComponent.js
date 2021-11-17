@@ -6,7 +6,7 @@ import StreamComponent from './stream/StreamComponent';
 import DialogExtensionComponent from './dialog-extension/DialogExtension';
 import ChatComponent from './chat/ChatComponent';
 import styled from 'styled-components';
-
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import OpenViduLayout from '../layout/openvidu-layout';
 import UserModel from '../models/user-model';
 import ToolbarComponent from './toolbar/ToolbarComponent';
@@ -22,12 +22,14 @@ import {
   Alert,
   Snackbar,
   NativeSelect,
+  Grid,
+  Modal,
+  Typography,
+  TextField,
+  Divider,
 } from '@mui/material';
 import { codeRun } from '../../../lib/api/run';
 import { writePost } from '../../../lib/api/posts';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import TextField from '@mui/material/TextField';
 import MuiAlert from '@mui/material/Alert';
 
 const StudyDiv = styled.div`
@@ -731,10 +733,12 @@ class VideoRoomComponent extends Component {
         </div>
 
         <StudyDiv>
-          <Box sx={{ display: 'flex' }}>
+          {/* 언어 선택하는 코드 */}
+          <Box sx={{backgroundColor:"#333333", p:2.5, mb:2}} />
+            <Box sx={{ display: 'flex' }}>
             <FormControl fullWidth>
               <InputLabel variant="standard" htmlFor="select-language">
-                Language
+                언어
               </InputLabel>
               <NativeSelect
                 defaultValue={'python'}
@@ -767,9 +771,10 @@ class VideoRoomComponent extends Component {
                 <option value={'c'}>c</option>
               </NativeSelect>
             </FormControl>
+            {/* 사이트 선택하는 코드 */}
             <FormControl fullWidth>
               <InputLabel variant="standard" htmlFor="select-site">
-                Site
+                사이트
               </InputLabel>
               <NativeSelect
                 defaultValue={'BOJ'}
@@ -804,39 +809,119 @@ class VideoRoomComponent extends Component {
                 <option value={'LeetCode'}>LeetCode</option>
               </NativeSelect>
             </FormControl>
-            <TextField
-              variant="outlined"
-              label="title"
-              value={this.state.title}
-              onChange={(e) => {
-                this.setState({
-                  title: e.target.value,
-                });
-                this.state.session
-                  .signal({
-                    data: e.target.value, // Any string (optional)
-                    to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-                    type: 'title', // The type of message (optional)
-                  })
-                  .then(() => {
-                    console.log('Message successfully sent');
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  });
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={() => {
-                this.modalHandleOpen();
-              }}
-            >
-              게시판에 저장
-            </Button>
-          </Box>
+            </Box>
+            {/* 제목 */}
+            <Grid container spacing={1}>
+              <Grid item xs={8}>
+              <FormControl fullWidth>
+                <TextField
+                  variant="filled"
+                  label="제목"
+                  value={this.state.title}
+                  onChange={(e) => {
+                    this.setState({
+                      title: e.target.value,
+                    });
+                    this.state.session
+                      .signal({
+                        data: e.target.value, // Any string (optional)
+                        to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                        type: 'title', // The type of message (optional)
+                      })
+                      .then(() => {
+                        console.log('Message successfully sent');
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  }}
+                />
+              </FormControl>
+              </Grid>
+              {/* 게시판 저장 버튼 */}
+              <Grid item xs={2} style={{alignSelf: 'center', textAlign: 'center'}}>
+              <Button
+                variant="outlined"
+                style={{padding:10, margin:'auto', border:'2px solid #14540D', borderRadius: '10px' }}
+                onClick={() => {
+                  this.modalHandleOpen();
+                }}
+              >
+                게시판 저장
+              </Button>
+              </Grid>
+              {/* 코드 실행 버튼 */}
+              <Grid item xs={2} style={{alignSelf: 'center', textAlign: 'center'}}>
+              <Button
+                variant="outlined"
+                style={{padding:10, margin:'auto', border:'2px solid #3F51B5', borderRadius: '10px' }}
+                onClick={() => {
+                  if (this.state.body) {
+                    if (this.state.language === 'python') {
+                      codeRun({
+                        body: this.state.body,
+                        language: 'python3',
+                        input: this.state.input,
+                      })
+                        .then((response) => {
+                          console.log(response);
+                          this.setState({
+                            output: response.data.output,
+                          });
+                          this.state.session
+                            .signal({
+                              data: response.data.output, // Any string (optional)
+                              to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                              type: 'output', // The type of message (optional)
+                            })
+                            .then(() => {
+                              console.log('Message successfully sent');
+                            })
+                            .catch((error) => {
+                              console.error(error);
+                            });
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    } else {
+                      codeRun({
+                        body: this.state.body,
+                        language: this.state.language,
+                        input: this.state.input,
+                      })
+                        .then((response) => {
+                          console.log(response);
+                          this.setState({
+                            output: response.data.output,
+                          });
+                          this.state.session
+                            .signal({
+                              data: response.data.output, // Any string (optional)
+                              to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                              type: 'output', // The type of message (optional)
+                            })
+                            .then(() => {
+                              console.log('Message successfully sent');
+                            })
+                            .catch((error) => {
+                              console.error(error);
+                            });
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    }
+                  }
+                }}
+              >
+                코드실행
+              </Button>
+              </Grid>
+            </Grid>
+          {/* 코드 에디터 코드 */}
           <Editor
-            height="50vh"
+            height="38vh"
             language={this.state.language}
             value={this.state.body}
             onChange={(e) => {
@@ -860,73 +945,18 @@ class VideoRoomComponent extends Component {
             // options={{ readOnly: 'true' }}
           />
 
-          <button
-            onClick={() => {
-              if (this.state.body) {
-                if (this.state.language === 'python') {
-                  codeRun({
-                    body: this.state.body,
-                    language: 'python3',
-                    input: this.state.input,
-                  })
-                    .then((response) => {
-                      console.log(response);
-                      this.setState({
-                        output: response.data.output,
-                      });
-                      this.state.session
-                        .signal({
-                          data: response.data.output, // Any string (optional)
-                          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-                          type: 'output', // The type of message (optional)
-                        })
-                        .then(() => {
-                          console.log('Message successfully sent');
-                        })
-                        .catch((error) => {
-                          console.error(error);
-                        });
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                    });
-                } else {
-                  codeRun({
-                    body: this.state.body,
-                    language: this.state.language,
-                    input: this.state.input,
-                  })
-                    .then((response) => {
-                      console.log(response);
-                      this.setState({
-                        output: response.data.output,
-                      });
-                      this.state.session
-                        .signal({
-                          data: response.data.output, // Any string (optional)
-                          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-                          type: 'output', // The type of message (optional)
-                        })
-                        .then(() => {
-                          console.log('Message successfully sent');
-                        })
-                        .catch((error) => {
-                          console.error(error);
-                        });
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                    });
-                }
-              }
-            }}
-          >
-            코드실행
-          </button>
-
-          <div>인풋</div>
+          <Box sx={{ width: '100%', border: '1px solid', mt: 1, p: 2, backgroundColor: '#EEEEEE' }}>
+          <Box sx={{ display: 'flex', mt: 1 }}>
+            <ErrorOutlineIcon style={{ color: 'grey', marginRight: '10' }} />
+            <Typography style={{ color: 'grey' }} >Input을 입력하고 실행을 선택하면 Output 결과를 확인할 수 있습니다.
+            Input 값을 넣지 않으면 시간초과 에러가 발생합니다.</Typography>
+          </Box>
+          <Divider style={{ marginTop: 10, marginBottom: 20 }} />
+          <Box sx={{ display: 'flex', mr:2 }}>
+          <Box sx={{ width: '100%' }}>
+          <Typography style={{ fontWeight: 'bold', marginBottom: 5 }} >Input</Typography>
           <Editor
-            height="15vh"
+            height="19.5vh"
             language={this.state.language}
             value={this.state.input}
             onChange={(e) => {
@@ -949,14 +979,19 @@ class VideoRoomComponent extends Component {
             theme="vs-dark" // light
             // options={{ readOnly: 'true' }}
           />
-          <div>아웃풋</div>
+          </Box>
+          <Box sx={{ width: '100%' }}>
+          <Typography style={{ fontWeight: 'bold', marginBottom: 5 }} >Output</Typography>
           <Editor
-            height="15vh"
+            height="19.5vh"
             language={this.state.language}
             value={this.state.output}
             theme="vs-dark" // light
             options={{ readOnly: 'true' }}
           />
+          </Box>
+          </Box>
+          </Box>
         </StudyDiv>
         {/* 게시판 저장 모달 */}
         <div>
