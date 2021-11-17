@@ -12,6 +12,7 @@ import rootReducer, { rootSaga } from './modules';
 import { CookiesProvider } from 'react-cookie';
 import { tempSetUser, check } from './modules/user';
 import { getCookie } from './lib/cookie';
+import { HelmetProvider } from 'react-helmet-async';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -38,7 +39,9 @@ ReactDOM.render(
   <CookiesProvider>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <HelmetProvider>
+          <App />
+        </HelmetProvider>
       </BrowserRouter>
     </Provider>
   </CookiesProvider>,

@@ -3,6 +3,7 @@ import VideoRoomComponent from '../components/study/components/VideoRoomComponen
 import registerServiceWorker from '../components/study/registerServiceWorker';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const StudyPage = () => {
   const { user, loading, session } = useSelector(
@@ -19,19 +20,24 @@ const StudyPage = () => {
   }
 
   return (
-    <div>
-      {!loading && user && user.user.status === 'success' && (
-        <VideoRoomComponent
-          // mail={user.mail}
-          // sessionName={user.mail.substring(0, parseInt(user.mail.length) - 10)}
-          sessionName={session}
-          user={user.user.data.name}
-          image={user.user.data.image}
-          mail={user.mail}
-        />
-      )}
-      {/* <VideoRoomComponent /> */}
-    </div>
+    <>
+      <Helmet>
+        <title>Cohort - 스터디룸</title>
+      </Helmet>
+      <div>
+        {!loading && user && user.user.status === 'success' && (
+          <VideoRoomComponent
+            // mail={user.mail}
+            // sessionName={user.mail.substring(0, parseInt(user.mail.length) - 10)}
+            sessionName={session}
+            user={user.user.data.name}
+            image={user.user.data.image}
+            mail={user.mail}
+          />
+        )}
+        {/* <VideoRoomComponent /> */}
+      </div>
+    </>
   );
 };
 

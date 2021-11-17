@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { removePost } from '../../lib/api/posts';
 import { addLike, removeLike } from '../../lib/api/like';
 import moment from 'moment';
+import IconButton from '@mui/material/IconButton';
 
 const style = {
   position: 'absolute',
@@ -23,8 +24,6 @@ const style = {
   boxShadow: 24,
   p: 2,
 };
-
-
 
 const PostViewer = ({ match, history }) => {
   const [open, setOpen] = React.useState(false);
@@ -108,7 +107,12 @@ const PostViewer = ({ match, history }) => {
       {!loading && post && post.data.user.mail === mail && (
         <>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
-            <Button variant="outlined" color="error" onClick={handleOpen} startIcon={<DeleteIcon />}>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={handleOpen}
+              startIcon={<DeleteIcon />}
+            >
               글삭제
             </Button>
           </Box>
@@ -119,17 +123,14 @@ const PostViewer = ({ match, history }) => {
             aria-describedby="modal-modal-description"
           >
             <Box sx={style}>
-              <Typography
-                id="modal-modal-title"
-                variant="h6"
-              >
+              <Typography id="modal-modal-title" variant="h6">
                 게시글을 정말 삭제하시겠습니까?
               </Typography>
-              <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2 }}>
-                <Button color="primary" onClick={ handleClose }>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <Button color="primary" onClick={handleClose}>
                   취소
                 </Button>
-                <Button color="error" onClick={ onRemove }>
+                <Button color="error" onClick={onRemove}>
                   삭제
                 </Button>
               </Box>
@@ -162,7 +163,7 @@ const PostViewer = ({ match, history }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'start',
-          margin: '8px'
+          margin: '8px',
         }}
       >
         {/* 좋아요취소 */}
@@ -170,7 +171,14 @@ const PostViewer = ({ match, history }) => {
           like &&
           like.status === 'success' &&
           like.data.includes(`${mail}`) &&
-          mail && <FavoriteIcon color="error" onClick={() => onRemoveLike(mail, post_id)} />}
+          mail && (
+            <IconButton>
+              <FavoriteIcon
+                color="error"
+                onClick={() => onRemoveLike(mail, post_id)}
+              />
+            </IconButton>
+          )}
 
         {/* 좋아요등록 */}
         {!likeLoading &&
@@ -178,12 +186,16 @@ const PostViewer = ({ match, history }) => {
           like.status === 'success' &&
           !like.data.includes(`${mail}`) &&
           mail && (
-            <FavoriteBorderIcon onClick={() => onAddLike({ mail, post_id })} />
+            <IconButton>
+              <FavoriteBorderIcon
+                onClick={() => onAddLike({ mail, post_id })}
+              />
+            </IconButton>
           )}
 
-          {!likeLoading && like && like.status === 'success' && (
-            <Box sx={{ ml: 1 }}>{like.data.length}명이 좋아합니다.</Box>
-          )}
+        {!likeLoading && like && like.status === 'success' && (
+          <Box sx={{ ml: 1 }}>{like.data.length}명이 좋아합니다.</Box>
+        )}
       </div>
     </div>
   );
