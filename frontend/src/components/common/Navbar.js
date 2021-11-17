@@ -14,6 +14,11 @@ import {
   Box,
   Grid,
   IconButton,
+  Avatar,
+  Chip,
+  ListItemAvatar,
+  ListItemText,
+  FormControl
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -65,6 +70,17 @@ const ModalBoxStyle = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+};
+
+const ModalBoxStyle2 = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
 };
 
 const Navbar = ({ history, location }) => {
@@ -266,46 +282,53 @@ const Navbar = ({ history, location }) => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={ModalBoxStyle}>
+          <Box sx={ModalBoxStyle2}>
             {user ? (
               // 로그인 했을 때
               <>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
+              <Box sx={{p:3}}>
+                <Typography id="modal-modal-title" variant="h5" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom:10 }}>
                   스터디룸 만들기
                 </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  방 접속 코드:
+                <Typography id="modal-modal-title" variant="body1" style={{ color: 'gray', textAlign: 'center', marginBottom:30 }}>
+                  나만의 알고리즘 스터디룸을 만들어 보세요. 사람들을 초대하여 스터디를 할 수 있습니다.
+                </Typography>
+                <Typography id="modal-modal-description" variant="button" sx={{ mt: 2 }}>
+                  방 접속 코드
                 </Typography>
                 {user && user.status === 'success' && (
-                  <div>
+                  <FormControl fullWidth>
                     <TextField
                       id="outlined-basic"
                       value={user.data.mail
                         .substring(0, parseInt(user.data.mail.length) - 10)
                         .replace(/\./g, '')}
                       variant="outlined"
+                      size="small"
                       readOnly
                     />
-                  </div>
+                  </FormControl>
                 )}
-
-                <Button variant="outlined" onClick={modalHandleClose}>
-                  취소
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    onSubmitSession(
-                      user.data.mail
-                        .substring(0, parseInt(user.data.mail.length) - 10)
-                        .replace(/\./g, ''),
-                    );
-                    modalHandleClose();
-                    history.push('/study');
-                  }}
-                >
-                  생성
-                </Button>
+                </Box>
+                <Box sx={{display:'flex', justifyContent: 'space-between', backgroundColor: '#EEEEEE', p:2}}>
+                  <Button variant="text" onClick={modalHandleClose} style={{ color: 'black' }}>
+                    뒤로 가기
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      onSubmitSession(
+                        user.data.mail
+                          .substring(0, parseInt(user.data.mail.length) - 10)
+                          .replace(/\./g, ''),
+                      );
+                      modalHandleClose();
+                      history.push('/study');
+                    }}
+                  >
+                    만들기
+                  </Button>
+                </Box>
               </>
             ) : (
               // 로그인하지 않았을 때
@@ -332,40 +355,47 @@ const Navbar = ({ history, location }) => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={ModalBoxStyle}>
+          <Box sx={ModalBoxStyle2}>
             {user ? (
               // 로그인을 했을 때
               <>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  스터디룸 참여하기
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  접속 코드를 입력해주세요
-                </Typography>
-                {user && user.status === 'success' && (
-                  <div>
-                    <TextField
-                      id="outlined-basic"
-                      variant="outlined"
-                      value={session}
-                      onChange={(e) => setSession(e.target.value)}
-                    />
-                  </div>
-                )}
-
-                <Button variant="outlined" onClick={enterModalHandleClose}>
-                  취소
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    onSubmitSession(session);
-                    enterModalHandleClose();
-                    history.push('/study');
-                  }}
-                >
-                  참여
-                </Button>
+                <Box sx={{p:3}}>
+                  <Typography id="modal-modal-title" variant="h5" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom:10 }}>
+                    스터디룸 참여하기
+                  </Typography>
+                  <Typography id="modal-modal-title" variant="body1" style={{ color: 'gray', textAlign: 'center', marginBottom:30 }}>
+                    아래에 접속 코드를 입력하여 스터디룸에 참가하세요.
+                  </Typography>
+                  <Typography id="modal-modal-description" variant="button" sx={{ mt: 2 }}>
+                    방 접속 코드
+                  </Typography>
+                  {user && user.status === 'success' && (
+                    <FormControl fullWidth>
+                      <TextField
+                        id="filled-required"
+                        variant="filled"
+                        value={session}
+                        onChange={(e) => setSession(e.target.value)}
+                        size="small"
+                      />
+                    </FormControl>
+                  )}
+                </Box>
+                <Box sx={{display:'flex', justifyContent: 'space-between', backgroundColor: '#EEEEEE', p:2}}>
+                  <Button variant="text" onClick={enterModalHandleClose} style={{ color: 'black' }}>
+                    뒤로 가기
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      onSubmitSession(session);
+                      enterModalHandleClose();
+                      history.push('/study');
+                    }}
+                  >
+                    참가하기
+                  </Button>
+                </Box>
               </>
             ) : (
               // 로그인하지 않았을 때
@@ -393,31 +423,55 @@ const Navbar = ({ history, location }) => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={ModalBoxStyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography id="modal-modal-title" variant="h6" style={{ fontWeight: 'bold' }}>
               내 정보
             </Typography>
+            <Divider>
+              <Chip label="INFO" />
+            </Divider>
             {user && user.status === 'success' && (
               <>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  이메일: {user.data.mail}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  이름: {user.data.name}
-                </Typography>{' '}
+                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                  <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                      <Avatar alt="profile" src={user.data.image} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      style={{textAlign: 'center', margin: 5}}
+                      primary={user.data.name}
+                      secondary={
+                        <>
+                          <Typography
+                            sx={{ display: 'inline' }}
+                            component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            이메일 :
+                          </Typography>
+                          {user.data.mail}
+                        </>
+                      }
+                    />
+                  </ListItem>
+                </List>
               </>
             )}
-
-            <Button variant="outlined" onClick={myInfoModalHandleClose}>
-              닫기
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                withdrawalModalHandleopen();
-              }}
-            >
-              회원탈퇴
-            </Button>
+            <Divider />
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2, p:1 }}>
+              <Button variant="outlined" onClick={myInfoModalHandleClose} style={{marginRight:10}}>
+                닫기
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  withdrawalModalHandleopen();
+                }}
+                color="error"
+              >
+                회원탈퇴
+              </Button>
+            </Box>
           </Box>
         </Modal>
       </div>
@@ -431,34 +485,38 @@ const Navbar = ({ history, location }) => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={ModalBoxStyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography id="modal-modal-title" variant="h6">
               정말 회원탈퇴 하시겠습니까
             </Typography>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                withdrawalModalHandleClose();
-              }}
-            >
-              아니오
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={async () => {
-                try {
-                  const response = await withdrawal(user.data.mail);
-                  if (response.data.status === 'success') {
-                    successWithdrawal();
-                    withdrawalModalHandleClose();
-                    myInfoModalHandleClose();
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2 }}>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  withdrawalModalHandleClose();
+                }}
+                style={{marginRight:10}}
+              >
+                아니오
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={async () => {
+                  try {
+                    const response = await withdrawal(user.data.mail);
+                    if (response.data.status === 'success') {
+                      successWithdrawal();
+                      withdrawalModalHandleClose();
+                      myInfoModalHandleClose();
+                    }
+                  } catch (error) {
+                    console.log(error);
                   }
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-            >
-              네
-            </Button>
+                }}
+                color="error"
+              >
+                네
+              </Button>
+            </Box>
           </Box>
         </Modal>
       </div>
