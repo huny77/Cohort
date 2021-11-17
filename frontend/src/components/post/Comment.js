@@ -1,6 +1,18 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { Box, TextField, List, ListItem, Divider, ListItemText, 
-  ListItemAvatar, Typography, Avatar, Modal, Button, IconButton  } from '@mui/material';
+import {
+  Box,
+  TextField,
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
+  ListItemAvatar,
+  Typography,
+  Avatar,
+  Modal,
+  Button,
+  IconButton,
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   writeComment,
@@ -164,9 +176,9 @@ const Comment = ({ match, location, history }) => {
           padding: '5px',
         }}
       >
-        {!postLoading && post && post.status === 'success'
-          ? `댓글(${post.data.comments.length}개)`
-          : `댓글(0)개`}
+        {!commentsLoading && comments && comments.status === 'success'
+          ? `댓글(${comments.data[0].totalComments})`
+          : `댓글(0)`}
       </div>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {!commentsLoading &&
@@ -214,7 +226,12 @@ const Comment = ({ match, location, history }) => {
                 />
                 {comment.user.mail === mail && (
                   <React.Fragment>
-                    <CustomizedButton aria-label="delete" color="secondary" size="large" onClick={handleOpen}>
+                    <CustomizedButton
+                      aria-label="delete"
+                      color="secondary"
+                      size="large"
+                      onClick={handleOpen}
+                    >
                       <DeleteIcon />
                     </CustomizedButton>
                     <Modal
@@ -224,17 +241,23 @@ const Comment = ({ match, location, history }) => {
                       aria-describedby="modal-modal-description"
                     >
                       <Box sx={style}>
-                        <Typography
-                          id="modal-modal-title"
-                          variant="h6"
-                        >
+                        <Typography id="modal-modal-title" variant="h6">
                           댓글을 정말 삭제하시겠습니까?
                         </Typography>
-                        <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2 }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            mt: 2,
+                          }}
+                        >
                           <Button color="primary" onClick={handleClose}>
                             취소
                           </Button>
-                          <Button color="error" onClick={() => onRemove(comment.id)}>
+                          <Button
+                            color="error"
+                            onClick={() => onRemove(comment.id)}
+                          >
                             삭제
                           </Button>
                         </Box>
