@@ -17,7 +17,8 @@ import {
   Avatar,
   Chip,
   ListItemAvatar,
-  ListItemText
+  ListItemText,
+  FormControl
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -69,6 +70,17 @@ const ModalBoxStyle = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+};
+
+const ModalBoxStyle2 = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
 };
 
 const Navbar = ({ history, location }) => {
@@ -270,46 +282,53 @@ const Navbar = ({ history, location }) => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={ModalBoxStyle}>
+          <Box sx={ModalBoxStyle2}>
             {user ? (
               // 로그인 했을 때
               <>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
+              <Box sx={{p:3}}>
+                <Typography id="modal-modal-title" variant="h5" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom:10 }}>
                   스터디룸 만들기
                 </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  방 접속 코드:
+                <Typography id="modal-modal-title" variant="body1" style={{ color: 'gray', textAlign: 'center', marginBottom:30 }}>
+                  나만의 알고리즘 스터디룸을 만들어 보세요. 사람들을 초대하여 스터디를 할 수 있습니다.
+                </Typography>
+                <Typography id="modal-modal-description" variant="button" sx={{ mt: 2 }}>
+                  방 접속 코드
                 </Typography>
                 {user && user.status === 'success' && (
-                  <div>
+                  <FormControl fullWidth>
                     <TextField
                       id="outlined-basic"
                       value={user.data.mail
                         .substring(0, parseInt(user.data.mail.length) - 10)
                         .replace(/\./g, '')}
                       variant="outlined"
+                      size="small"
                       readOnly
                     />
-                  </div>
+                  </FormControl>
                 )}
-
-                <Button variant="outlined" onClick={modalHandleClose}>
-                  취소
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    onSubmitSession(
-                      user.data.mail
-                        .substring(0, parseInt(user.data.mail.length) - 10)
-                        .replace(/\./g, ''),
-                    );
-                    modalHandleClose();
-                    history.push('/study');
-                  }}
-                >
-                  생성
-                </Button>
+                </Box>
+                <Box sx={{display:'flex', justifyContent: 'space-between', backgroundColor: '#EEEEEE', p:2}}>
+                  <Button variant="text" onClick={modalHandleClose} style={{ color: 'black' }}>
+                    뒤로 가기
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      onSubmitSession(
+                        user.data.mail
+                          .substring(0, parseInt(user.data.mail.length) - 10)
+                          .replace(/\./g, ''),
+                      );
+                      modalHandleClose();
+                      history.push('/study');
+                    }}
+                  >
+                    만들기
+                  </Button>
+                </Box>
               </>
             ) : (
               // 로그인하지 않았을 때
@@ -336,7 +355,7 @@ const Navbar = ({ history, location }) => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={ModalBoxStyle}>
+          <Box sx={ModalBoxStyle2}>
             {user ? (
               // 로그인을 했을 때
               <>
