@@ -167,7 +167,7 @@ const CodeEditor = ({ history }) => {
           autoHideDuration={2000}
           onClose={handleClose}
         >
-          <Alert onClose={handleClose} severity="error">
+          <Alert onClose={handleClose} variant="filled" severity="error">
             제목과 코드를 입력해주세요.
           </Alert>
         </Snackbar>
