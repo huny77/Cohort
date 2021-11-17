@@ -14,6 +14,10 @@ import {
   Box,
   Grid,
   IconButton,
+  Avatar,
+  Chip,
+  ListItemAvatar,
+  ListItemText
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -393,31 +397,54 @@ const Navbar = ({ history, location }) => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={ModalBoxStyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography id="modal-modal-title" variant="h6" style={{ fontWeight: 'bold' }}>
               내 정보
             </Typography>
+            <Divider>
+              <Chip label="INFO" />
+            </Divider>
             {user && user.status === 'success' && (
               <>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  이메일: {user.data.mail}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  이름: {user.data.name}
-                </Typography>{' '}
+                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                  <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                      <Avatar alt="profile" src={user.data.image} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={user.data.name}
+                      secondary={
+                        <>
+                          <Typography
+                            sx={{ display: 'inline' }}
+                            component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            이메일 :
+                          </Typography>
+                          {user.data.mail}
+                        </>
+                      }
+                    />
+                  </ListItem>
+                </List>
               </>
             )}
-
-            <Button variant="outlined" onClick={myInfoModalHandleClose}>
-              닫기
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                withdrawalModalHandleopen();
-              }}
-            >
-              회원탈퇴
-            </Button>
+            <Divider />
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2, p:1 }}>
+              <Button variant="outlined" onClick={myInfoModalHandleClose} style={{marginRight:10}}>
+                닫기
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  withdrawalModalHandleopen();
+                }}
+                color="error"
+              >
+                회원탈퇴
+              </Button>
+            </Box>
           </Box>
         </Modal>
       </div>
@@ -431,34 +458,38 @@ const Navbar = ({ history, location }) => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={ModalBoxStyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography id="modal-modal-title" variant="h6">
               정말 회원탈퇴 하시겠습니까
             </Typography>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                withdrawalModalHandleClose();
-              }}
-            >
-              아니오
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={async () => {
-                try {
-                  const response = await withdrawal(user.data.mail);
-                  if (response.data.status === 'success') {
-                    successWithdrawal();
-                    withdrawalModalHandleClose();
-                    myInfoModalHandleClose();
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', mt:2 }}>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  withdrawalModalHandleClose();
+                }}
+                style={{marginRight:10}}
+              >
+                아니오
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={async () => {
+                  try {
+                    const response = await withdrawal(user.data.mail);
+                    if (response.data.status === 'success') {
+                      successWithdrawal();
+                      withdrawalModalHandleClose();
+                      myInfoModalHandleClose();
+                    }
+                  } catch (error) {
+                    console.log(error);
                   }
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-            >
-              네
-            </Button>
+                }}
+                color="error"
+              >
+                네
+              </Button>
+            </Box>
           </Box>
         </Modal>
       </div>
