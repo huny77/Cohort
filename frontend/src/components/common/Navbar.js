@@ -411,6 +411,7 @@ const Navbar = ({ history, location }) => {
                       <Avatar alt="profile" src={user.data.image} />
                     </ListItemAvatar>
                     <ListItemText
+                      style={{textAlign: 'center', margin: 5}}
                       primary={user.data.name}
                       secondary={
                         <>
