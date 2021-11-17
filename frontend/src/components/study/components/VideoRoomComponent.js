@@ -1012,49 +1012,55 @@ class VideoRoomComponent extends Component {
                 bgcolor: 'background.paper',
                 border: '2px solid #000',
                 boxShadow: 24,
-                p: 4,
+                p: 2,
                 zIndex: 999999,
               }}
             >
               <>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  게시판에 코드 저장하기
-                </Typography>
-
-                <Button variant="outlined" onClick={this.modalHandleClose}>
-                  취소
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    if (!this.state.title || !this.state.body) {
-                      this.setState({
-                        validOpen: true,
-                      });
-                    } else {
-                      writePost({
-                        title: this.state.title,
-                        language: this.state.language,
-                        content: `${this.state.body}`,
-                        site: this.state.site,
-                        mail: mail,
-                      })
-                        .then((response) => {
-                          if (response.data.status === 'success') {
-                            this.setState({
-                              alertOpen: true,
-                            });
-                            this.modalHandleClose();
-                          }
-                        })
-                        .catch((error) => {
-                          console.error(error);
+                <Box sx={{ display:'flex' }} style={{alignItems: 'center', textAlign: 'center'}}>
+                  <ErrorOutlineIcon style={{ marginRight: 10 }} />
+                  <Typography id="modal-modal-title" variant="h6" component="h2">
+                    게시판에 코드 저장하기
+                  </Typography>
+                </Box>
+                <Box sx={{ display:'flex', justifyContent: 'flex-end', mt:3, p:1}}>
+                  <Button
+                    style={{ border:'2px solid red', borderRadius: '10px', marginRight: 5 }} 
+                    onClick={this.modalHandleClose}>
+                    취소
+                  </Button>
+                  <Button
+                    style={{ border:'2px solid #3F51B5', borderRadius: '10px' }}
+                    onClick={() => {
+                      if (!this.state.title || !this.state.body) {
+                        this.setState({
+                          validOpen: true,
                         });
-                    }
-                  }}
-                >
-                  저장
-                </Button>
+                      } else {
+                        writePost({
+                          title: this.state.title,
+                          language: this.state.language,
+                          content: `${this.state.body}`,
+                          site: this.state.site,
+                          mail: mail,
+                        })
+                          .then((response) => {
+                            if (response.data.status === 'success') {
+                              this.setState({
+                                alertOpen: true,
+                              });
+                              this.modalHandleClose();
+                            }
+                          })
+                          .catch((error) => {
+                            console.error(error);
+                          });
+                      }
+                    }}
+                  >
+                    저장
+                  </Button>
+                </Box>
               </>
             </Box>
           </Modal>
