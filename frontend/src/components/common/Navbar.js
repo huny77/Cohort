@@ -449,6 +449,13 @@ const Navbar = ({ history, location }) => {
                       value={session}
                       onChange={(e) => setSession(e.target.value)}
                       size="small"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          onSubmitSession(session);
+                          enterModalHandleClose();
+                          history.push('/study');
+                        }
+                      }}
                     />
                   </FormControl>
                 )}
