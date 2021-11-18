@@ -18,12 +18,7 @@ const renderContent = () => {
     <>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Box sx={{ mr:7, mt:20 }}>
-          {/* <h1 style={{ fontSize: '5rem' }}>Cohort</h1> */}
-          <img
-            src={`${process.env.PUBLIC_URL + 'cohort-remove.png'}`}
-            alt="cohort"
-            style={{ marginLeft: 50 }}
-          />
+          <h1 style={{ fontSize: '5rem' }}>Cohort</h1>
           <Box sx={{ display: 'flex' }}>
           <Typography variant="h4" style={{ fontWeight: 'bold' }}>"학습의 공유"</Typography>
           <Typography variant="h4">라는 비전으로</Typography>
