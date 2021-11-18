@@ -3,7 +3,7 @@ import GoogleLogin from 'react-google-login';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { oauth } from '../../modules/auth';
-import { check, userSaga } from '../../modules/user';
+import { check } from '../../modules/user';
 import { setCookie } from '../../lib/cookie';
 import { tempSetUser } from '../../modules/user';
 import Avatar from '@mui/material/Avatar';
@@ -30,14 +30,12 @@ const GoogleAuth = ({ history }) => {
 
   useEffect(() => {
     if (googleError) {
-      console.log('오류 발생');
       console.log(googleError);
       setError('로그인 실패');
       return;
     }
     if (google) {
       const mail = google.data.mail;
-      console.log('로그인 성공');
       dispatch(check(mail));
       history.push('/');
       setOpen(true);

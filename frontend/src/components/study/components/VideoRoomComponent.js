@@ -183,7 +183,6 @@ class VideoRoomComponent extends Component {
               this.setState({
                 body: event.data,
               });
-              console.log('저장이됩니까');
             }
           }
         });
@@ -196,7 +195,6 @@ class VideoRoomComponent extends Component {
               this.setState({
                 input: event.data,
               });
-              console.log('저장이됩니까');
             }
           }
         });
@@ -209,7 +207,6 @@ class VideoRoomComponent extends Component {
               this.setState({
                 output: event.data,
               });
-              console.log('저장이됩니까');
             }
           }
         });
@@ -222,8 +219,6 @@ class VideoRoomComponent extends Component {
               this.setState({
                 site: event.data,
               });
-              console.log('저장이됩니까');
-              console.log(this.state.site);
             }
           }
         });
@@ -236,8 +231,6 @@ class VideoRoomComponent extends Component {
               this.setState({
                 language: event.data,
               });
-              console.log('저장이됩니까');
-              console.log(this.state.language);
             }
           }
         });
@@ -250,8 +243,6 @@ class VideoRoomComponent extends Component {
               this.setState({
                 title: event.data,
               });
-              console.log('저장이됩니까');
-              console.log(this.state.title);
             }
           }
         });
@@ -261,12 +252,10 @@ class VideoRoomComponent extends Component {
 
   connectToSession() {
     if (this.props.token !== undefined) {
-      console.log('token received: ', this.props.token);
       this.connect(this.props.token);
     } else {
       this.getToken()
         .then((token) => {
-          console.log(token);
           this.connect(token);
         })
         .catch((error) => {
@@ -278,11 +267,7 @@ class VideoRoomComponent extends Component {
               status: error.status,
             });
           }
-          console.log(
-            'There was an error getting the token:',
-            error.code,
-            error.message,
-          );
+          console.log('There was an error getting the token:');
           alert('There was an error getting the token:', error.message);
         });
     }
@@ -304,11 +289,7 @@ class VideoRoomComponent extends Component {
           });
         }
         alert('There was an error connecting to the session:', error.message);
-        console.log(
-          'There was an error connecting to the session:',
-          error.code,
-          error.message,
-        );
+        console.log('There was an error connecting to the session:');
       });
   }
 
@@ -472,7 +453,7 @@ class VideoRoomComponent extends Component {
       remoteUsers.forEach((user) => {
         if (user.getConnectionId() === event.from.connectionId) {
           const data = JSON.parse(event.data);
-          console.log('EVENTO REMOTE: ', event.data);
+
           if (data.isAudioActive !== undefined) {
             user.setAudioActive(data.isAudioActive);
           }
@@ -623,7 +604,6 @@ class VideoRoomComponent extends Component {
     if (display === 'block') {
       this.setState({ chatDisplay: display, messageReceived: false });
     } else {
-      console.log('chat', display);
       this.setState({ chatDisplay: display });
     }
     this.updateLayout();
@@ -734,8 +714,8 @@ class VideoRoomComponent extends Component {
 
         <StudyDiv>
           {/* 언어 선택하는 코드 */}
-          <Box sx={{backgroundColor:"#333333", p:2.5, mb:2}} />
-            <Box sx={{ display: 'flex', ml:1 }}>
+          <Box sx={{ backgroundColor: '#333333', p: 2.5, mb: 2 }} />
+          <Box sx={{ display: 'flex', ml: 1 }}>
             <FormControl fullWidth>
               <InputLabel variant="standard" htmlFor="select-language">
                 언어
@@ -757,9 +737,7 @@ class VideoRoomComponent extends Component {
                       to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
                       type: 'language', // The type of message (optional)
                     })
-                    .then(() => {
-                      console.log('Message successfully sent');
-                    })
+                    .then(() => {})
                     .catch((error) => {
                       console.error(error);
                     });
@@ -793,9 +771,7 @@ class VideoRoomComponent extends Component {
                       to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
                       type: 'site', // The type of message (optional)
                     })
-                    .then(() => {
-                      console.log('Message successfully sent');
-                    })
+                    .then(() => {})
                     .catch((error) => {
                       console.error(error);
                     });
@@ -809,10 +785,10 @@ class VideoRoomComponent extends Component {
                 <option value={'LeetCode'}>LeetCode</option>
               </NativeSelect>
             </FormControl>
-            </Box>
-            {/* 제목 */}
-            <Grid container spacing={1}>
-              <Grid item xs={8}>
+          </Box>
+          {/* 제목 */}
+          <Grid container spacing={1}>
+            <Grid item xs={8}>
               <FormControl fullWidth>
                 <TextField
                   variant="filled"
@@ -828,33 +804,49 @@ class VideoRoomComponent extends Component {
                         to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
                         type: 'title', // The type of message (optional)
                       })
-                      .then(() => {
-                        console.log('Message successfully sent');
-                      })
+                      .then(() => {})
                       .catch((error) => {
                         console.error(error);
                       });
                   }}
                 />
               </FormControl>
-              </Grid>
-              {/* 게시판 저장 버튼 */}
-              <Grid item xs={2} style={{alignSelf: 'center', textAlign: 'center'}}>
+            </Grid>
+            {/* 게시판 저장 버튼 */}
+            <Grid
+              item
+              xs={2}
+              style={{ alignSelf: 'center', textAlign: 'center' }}
+            >
               <Button
                 variant="outlined"
-                style={{padding:10, margin:'auto', border:'2px solid #14540D', borderRadius: '10px' }}
+                style={{
+                  padding: 10,
+                  margin: 'auto',
+                  border: '2px solid #14540D',
+                  borderRadius: '10px',
+                }}
                 onClick={() => {
                   this.modalHandleOpen();
                 }}
               >
                 게시판 저장
               </Button>
-              </Grid>
-              {/* 코드 실행 버튼 */}
-              <Grid item xs={2} style={{alignSelf: 'center', textAlign: 'center'}}>
+            </Grid>
+            {/* 코드 실행 버튼 */}
+            <Grid
+              item
+              xs={2}
+              style={{ alignSelf: 'center', textAlign: 'center' }}
+            >
               <Button
                 variant="outlined"
-                style={{padding:10, margin:'auto', border:'2px solid #3F51B5', borderRadius: '10px' }}
+                style={{
+                  padding: 10,
+                  margin: 'auto',
+                  border: '2px solid #3F51B5',
+                  borderRadius: '10px',
+                }}
                 onClick={() => {
                   if (this.state.body) {
                     if (this.state.language === 'python') {
@@ -864,7 +856,6 @@ class VideoRoomComponent extends Component {
                         input: this.state.input,
                       })
                         .then((response) => {
-                          console.log(response);
                           this.setState({
                             output: response.data.output,
                           });
@@ -874,9 +865,7 @@ class VideoRoomComponent extends Component {
                               to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
                               type: 'output', // The type of message (optional)
                             })
-                            .then(() => {
-                              console.log('Message successfully sent');
-                            })
+                            .then(() => {})
                             .catch((error) => {
                               console.error(error);
                             });
@@ -891,7 +880,6 @@ class VideoRoomComponent extends Component {
                         input: this.state.input,
                       })
                         .then((response) => {
-                          console.log(response);
                           this.setState({
                             output: response.data.output,
                           });
@@ -901,9 +889,7 @@ class VideoRoomComponent extends Component {
                               to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
                               type: 'output', // The type of message (optional)
                             })
-                            .then(() => {
-                              console.log('Message successfully sent');
-                            })
+                            .then(() => {})
                             .catch((error) => {
                               console.error(error);
                             });
@@ -917,8 +903,8 @@ class VideoRoomComponent extends Component {
               >
                 코드실행
               </Button>
-              </Grid>
             </Grid>
+          </Grid>
           {/* 코드 에디터 코드 */}
           <Editor
             height="38vh"
@@ -934,9 +920,7 @@ class VideoRoomComponent extends Component {
                   to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
                   type: 'body', // The type of message (optional)
                 })
-                .then(() => {
-                  console.log('Message successfully sent');
-                })
+                .then(() => {})
                 .catch((error) => {
                   console.error(error);
                 });
@@ -945,52 +929,64 @@ class VideoRoomComponent extends Component {
             // options={{ readOnly: 'true' }}
           />
 
-          <Box sx={{ width: '100%', border: '1px solid', mt: 1, p: 2, backgroundColor: '#EEEEEE' }}>
-          <Box sx={{ display: 'flex', mt: 1 }}>
-            <ErrorOutlineIcon style={{ color: 'grey', marginRight: '10' }} />
-            <Typography style={{ color: 'grey' }} >Input을 입력하고 실행을 선택하면 Output 결과를 확인할 수 있습니다.
-            Input 값을 넣지 않으면 시간초과 에러가 발생합니다.</Typography>
-          </Box>
-          <Divider style={{ marginTop: 10, marginBottom: 20 }} />
-          <Box sx={{ display: 'flex', mr:2 }}>
-          <Box sx={{ width: '100%' }}>
-          <Typography style={{ fontWeight: 'bold', marginBottom: 5 }} >Input</Typography>
-          <Editor
-            height="19.5vh"
-            language={this.state.language}
-            value={this.state.input}
-            onChange={(e) => {
-              this.setState({
-                input: e,
-              });
-              this.state.session
-                .signal({
-                  data: e, // Any string (optional)
-                  to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-                  type: 'input', // The type of message (optional)
-                })
-                .then(() => {
-                  console.log('Message successfully sent');
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
+          <Box
+            sx={{
+              width: '100%',
+              border: '1px solid',
+              mt: 1,
+              p: 2,
+              backgroundColor: '#EEEEEE',
             }}
-            theme="vs-dark" // light
-            // options={{ readOnly: 'true' }}
-          />
-          </Box>
-          <Box sx={{ width: '100%' }}>
-          <Typography style={{ fontWeight: 'bold', marginBottom: 5 }} >Output</Typography>
-          <Editor
-            height="19.5vh"
-            language={this.state.language}
-            value={this.state.output}
-            theme="vs-dark" // light
-            options={{ readOnly: 'true' }}
-          />
-          </Box>
-          </Box>
+          >
+            <Box sx={{ display: 'flex', mt: 1 }}>
+              <ErrorOutlineIcon style={{ color: 'grey', marginRight: '10' }} />
+              <Typography style={{ color: 'grey' }}>
+                Input을 입력하고 실행을 선택하면 Output 결과를 확인할 수
+                있습니다. Input 값을 넣지 않으면 시간초과 에러가 발생합니다.
+              </Typography>
+            </Box>
+            <Divider style={{ marginTop: 10, marginBottom: 20 }} />
+            <Box sx={{ display: 'flex', mr: 2 }}>
+              <Box sx={{ width: '100%' }}>
+                <Typography style={{ fontWeight: 'bold', marginBottom: 5 }}>
+                  Input
+                </Typography>
+                <Editor
+                  height="19.5vh"
+                  language={this.state.language}
+                  value={this.state.input}
+                  onChange={(e) => {
+                    this.setState({
+                      input: e,
+                    });
+                    this.state.session
+                      .signal({
+                        data: e, // Any string (optional)
+                        to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+                        type: 'input', // The type of message (optional)
+                      })
+                      .then(() => {})
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  }}
+                  theme="vs-dark" // light
+                  // options={{ readOnly: 'true' }}
+                />
+              </Box>
+              <Box sx={{ width: '100%' }}>
+                <Typography style={{ fontWeight: 'bold', marginBottom: 5 }}>
+                  Output
+                </Typography>
+                <Editor
+                  height="19.5vh"
+                  language={this.state.language}
+                  value={this.state.output}
+                  theme="vs-dark" // light
+                  options={{ readOnly: 'true' }}
+                />
+              </Box>
+            </Box>
           </Box>
         </StudyDiv>
         {/* 게시판 저장 모달 */}
@@ -1017,20 +1013,42 @@ class VideoRoomComponent extends Component {
               }}
             >
               <>
-                <Box sx={{ display:'flex' }} style={{alignItems: 'center', textAlign: 'center'}}>
+                <Box
+                  sx={{ display: 'flex' }}
+                  style={{ alignItems: 'center', textAlign: 'center' }}
+                >
                   <ErrorOutlineIcon style={{ marginRight: 10 }} />
-                  <Typography id="modal-modal-title" variant="h6" component="h2">
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    component="h2"
+                  >
                     게시판에 코드 저장하기
                   </Typography>
                 </Box>
-                <Box sx={{ display:'flex', justifyContent: 'flex-end', mt:3, p:1}}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    mt: 3,
+                    p: 1,
+                  }}
+                >
                   <Button
-                    style={{ border:'2px solid red', borderRadius: '10px', marginRight: 5 }} 
-                    onClick={this.modalHandleClose}>
+                    style={{
+                      border: '2px solid red',
+                      borderRadius: '10px',
+                      marginRight: 5,
+                    }}
+                    onClick={this.modalHandleClose}
+                  >
                     취소
                   </Button>
                   <Button
-                    style={{ border:'2px solid #3F51B5', borderRadius: '10px' }}
+                    style={{
+                      border: '2px solid #3F51B5',
+                      borderRadius: '10px',
+                    }}
                     onClick={() => {
                       if (!this.state.title || !this.state.body) {
                         this.setState({
@@ -1130,7 +1148,6 @@ class VideoRoomComponent extends Component {
           },
         })
         .then((response) => {
-          console.log('CREATE SESION', response);
           resolve(response.data.id);
         })
         .catch((response) => {
@@ -1181,7 +1198,6 @@ class VideoRoomComponent extends Component {
           },
         )
         .then((response) => {
-          console.log('TOKEN', response);
           resolve(response.data.token);
         })
         .catch((error) => reject(error));
