@@ -34,7 +34,8 @@ const Location = () => {
     const container = document.getElementById('map');
     const options = {
       center: new kakao.maps.LatLng(36.35536410083951, 127.29835091080787),
-      level: 3
+      level: 3,
+      draggable: false
     };
     const map = new kakao.maps.Map(container, options);
     const markerPosition = new kakao.maps.LatLng(36.35536410083951, 127.29835091080787);

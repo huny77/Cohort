@@ -735,7 +735,7 @@ class VideoRoomComponent extends Component {
         <StudyDiv>
           {/* 언어 선택하는 코드 */}
           <Box sx={{backgroundColor:"#333333", p:2.5, mb:2}} />
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', ml:1 }}>
             <FormControl fullWidth>
               <InputLabel variant="standard" htmlFor="select-language">
                 언어

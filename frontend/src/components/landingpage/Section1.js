@@ -13,23 +13,25 @@ const CustomizedRoot = styled.div`
   transition: 2s;
 `;
 
-const CustomizedText = styled(Typography)`
-  font-size: 1.7rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
-`;
-
 const renderContent = () => {
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Box sx={{ marginRight: '10%', paddingTop: '10%' }}>
-          <h1 style={{ fontSize: '5rem' }}>Cohort</h1>
-          <CustomizedText>"학습의 공유"라는 비전으로</CustomizedText>
+        <Box sx={{ mr:7, mt:20 }}>
+          {/* <h1 style={{ fontSize: '5rem' }}>Cohort</h1> */}
+          <img
+            src={`${process.env.PUBLIC_URL + 'cohort-remove.png'}`}
+            alt="cohort"
+            style={{ marginLeft: 50 }}
+          />
+          <Box sx={{ display: 'flex' }}>
+          <Typography variant="h4" style={{ fontWeight: 'bold' }}>"학습의 공유"</Typography>
+          <Typography variant="h4">라는 비전으로</Typography>
+          </Box>
           <br />
-          <CustomizedText>누구나 알고리즘을 알려주고 배우는</CustomizedText>
+          <Typography variant="h4">누구나 알고리즘을 알려주고 배우는</Typography>
           <br />
-          <CustomizedText>생태계를 만들어나가고 있습니다.</CustomizedText>
+          <Typography variant="h4">생태계를 만들어나가고 있습니다.</Typography>
         </Box>
       </Box>
     </>
