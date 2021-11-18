@@ -52,7 +52,8 @@ const CustomizedText = styled(Typography)`
 
 const CustomizedArrow = styled(IconButton)`
   font-size: 5rem;
-`;
+  margin-top: -2%;
+`
 
 const Header = () => {
   const [checked, setChecked] = useState(false);
@@ -87,7 +88,12 @@ const Header = () => {
         <CustomizedContainer>
           <CustomizedText>
             Welcome to <br />
-            <span style={{ fontWeight: 'bold' }}>Cohort.</span>
+            {/* <span style={{ fontWeight: 'bold' }}>Cohort.</span> */}
+            <img
+              src={`${process.env.PUBLIC_URL + 'cohort.png'}`}
+              alt="cohort"
+              style={{ margin: -25 }}
+            />
           </CustomizedText>
           <Scroll to="about-cohort" smooth={true}>
             <CustomizedArrow>
