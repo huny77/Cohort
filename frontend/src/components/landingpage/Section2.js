@@ -2,12 +2,6 @@ import { Typography, Box} from '@mui/material';
 import styled from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 
-const CustomizedText = styled(Typography)`
-  font-size: 1.7rem;
-  font-weight: bold;
-  margin-bottom: 3rem;
-`;
-
 const ZoomBox = styled(Box)`
   display: flex;
   min-height: 100vh;
@@ -21,12 +15,15 @@ const ZoomBox = styled(Box)`
 const renderContent = () => {
   return (
     <>
-      <Box sx={{ marginLeft: '10%', paddingTop: '10%', margin: 'auto' }}>
-        <CustomizedText>코드를 자유롭게 공유하고 학습하세요.</CustomizedText>
+      <Box sx={{ marginLeft: '10%', margin: 'auto' }}>
+        <Typography variant="h4" style={{ marginBottom: 30 }}>코드를 자유롭게 공유하고 학습하세요.</Typography>
         <br />
-        <CustomizedText>Cohort는 화상채팅과 함께</CustomizedText>
+        <Box sx={{ display: 'flex' }}>
+        <Typography variant="h4" style={{ marginBottom: 30 }}>Cohort는 </Typography>
+        <Typography variant="h4" style={{ fontWeight: 'bold', marginBottom: 30, marginLeft: 15 }}>화상채팅과 함께</Typography>
+        </Box>
         <br />
-        <CustomizedText>코드 동시 작성 기능을 제공합니다.</CustomizedText>
+        <Typography variant="h4" style={{ fontWeight: 'bold', marginBottom: 30 }}>코드 동시 작성 기능을 제공합니다.</Typography>
       </Box>
       <img
         src={`${process.env.PUBLIC_URL + '/assets/bgImage2.jpg'}`}
